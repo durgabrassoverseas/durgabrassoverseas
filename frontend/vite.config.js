@@ -15,9 +15,9 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg}']
       },
       manifest: {
-        name: 'My Vite App',
-        short_name: 'ViteApp',
-        description: 'My awesome React PWA built with Vite',
+        name: 'DBO',
+        short_name: 'DBO',
+        description: 'Durga Brass Overseas - A Leading Exporter and Manufacturer of Brass Products',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
