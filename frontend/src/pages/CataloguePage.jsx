@@ -177,7 +177,7 @@ const CataloguePage = () => {
                 <img
                   src={currentProduct.imageURL || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1500"}
                   alt={currentProduct.name}
-                  className="w-full h-full object-fit transition-transform duration-1000 group-hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-1000 group-hover:scale-105"
                 />
               </div>
             </div>
