@@ -190,7 +190,7 @@ const CataloguePage = () => {
                 <h2 className="text-4xl font-bold text-slate-900 leading-[1.1]">{currentProduct.name}</h2>
                 <div className="flex items-baseline gap-4">
                   <p className="text-3xl font-light text-slate-900">${currentProduct.price}</p>
-                  <p className="text-md uppercase tracking-widest text-slate-400 font-bold">ID: {currentProduct.itemNumber}</p>
+                  <p className="text-md uppercase tracking-widest text-slate-400 font-bold">Item No.: {currentProduct.itemNumber}</p>
                 </div>
               </div>
 
