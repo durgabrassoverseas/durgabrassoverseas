@@ -1209,10 +1209,10 @@ const ProductsPage = () => {
         {/* Products Table */}
         <ProductsTable
           products={products}
-  onEdit={setSelectedProductId}
-  sortOrder={sortOrder}
-  setSortOrder={setSortOrder}
-  setCurrentPage={setCurrentPage}
+          onEdit={setSelectedProductId}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
+          setCurrentPage={setCurrentPage}
         />
 
         {/* PAGINATION CONTROLS */}

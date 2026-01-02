@@ -1,19 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../../api/axiosInstance.js";
 
 export const createCategory = createAsyncThunk(
   "admin/createCategory",
-  async ({ name, token }, thunkAPI) => {
+  async ({ name }, thunkAPI) => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/categories`,
-        { name },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axiosInstance.post(`/categories`, { name });
       console.log("Create category response data:", res.data); // Debugging line
       return res.data; // newly created category
     } catch (error) {
@@ -29,9 +21,7 @@ export const fetchCategories = createAsyncThunk(
   "admin/fetchCategories",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/categories`
-      );
+      const res = await axiosInstance.get("/categories");
       console.log("Fetch categories response data:", res.data); // Debugging line
       return res.data; // array of categories
     } catch (error) {
@@ -45,16 +35,11 @@ export const fetchCategories = createAsyncThunk(
 
 export const createProduct = createAsyncThunk(
   "admin/createProduct",
-  async ({ productData, token }, thunkAPI) => {
+  async ({ productData }, thunkAPI) => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/products`,
-        productData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await axiosInstance.post(
+        "/products",
+        productData
       );
       console.log("Create product response data:", res.data); // Debugging line
       return res.data; // newly created product
@@ -69,19 +54,12 @@ export const createProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   "admin/updateProduct",
-  async ({ productId, field, value, token }, thunkAPI) => {
+  async ({ productId, field, value}, thunkAPI) => {
     console.log("Updating product:", { productId, field, value }); // Debugging line
     try {
-      const res = await axios.patch(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/products/${productId}/update-field`,
+      const res = await axiosInstance.patch(
+          `/products/${productId}/update-field`,
         { field, value },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
 
       return res.data.product; // return updated product
@@ -97,14 +75,9 @@ export const createItem = createAsyncThunk(
   "admin/createItem",
   async ({ productId, quantity, token }, thunkAPI) => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/items`,
+      const res = await axiosInstance.post(
+        "/items",
         { productId, quantity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       console.log("Create item response data:", res.data); // Debugging line
       return res.data; // newly created items
@@ -121,7 +94,7 @@ export const fetchItems = createAsyncThunk(
   "admin/fetchItems",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/items`);
+      const res = await axiosInstance.get("/items");
       console.log("Fetch items response data:", res.data); // Debugging line
       return res.data; // array of items
     } catch (error) {
@@ -137,7 +110,7 @@ export const fetchDashboardStats = createAsyncThunk(
   "admin/fetchDashboardStats",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/stats`);
+      const res = await axiosInstance.get("/stats");
       console.log("Fetch dashboard stats response data:", res.data); // Debugging line
       return res.data; // dashboard stats
     } catch (error) {
@@ -153,9 +126,7 @@ export const fetchFinishes = createAsyncThunk(
   "admin/fetchFinishes",
   async (_, thunkAPI) => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/finish`
-      );
+      const res = await axiosInstance.get("/finish");
       console.log("Fetch finishes response data:", res.data); // Debugging line
       return res.data; // array of finishes
     } catch (error) {
@@ -171,14 +142,9 @@ export const createFinish = createAsyncThunk(
   "admin/createFinish",
   async ({ name, token }, thunkAPI) => {
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/finish`,
+      const res = await axiosInstance.post(
+        "/finish",
         { name },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
       );
       console.log("Create finish response data:", res.data); // Debugging line
       return res.data; // newly created finish
@@ -193,15 +159,10 @@ export const createFinish = createAsyncThunk(
 
 export const deleteFinish = createAsyncThunk(
   "admin/deleteFinish",
-  async ({ id, token }, thunkAPI) => {
+  async ({ id }, thunkAPI) => {
     try {
-      const res = await axios.delete(
-        `${import.meta.env.VITE_API_BASE_URL}/finish/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const res = await axiosInstance.delete(
+        `/finish/${id}`,
       );
       console.log("Delete finish response data:", res.data); // Debugging line
       return id; // return deleted finish id
@@ -232,8 +193,8 @@ export const fetchProducts = createAsyncThunk(
         params.append("category", categoryId);
       }
 
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/products?${params.toString()}`
+      const res = await axiosInstance.get(
+        `/products?${params.toString()}`
       );
 
       return res.data;
