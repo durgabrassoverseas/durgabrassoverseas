@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
 import { LogOut, Menu } from "lucide-react";
 
 const AdminLayout = () => {
@@ -25,6 +26,8 @@ const AdminLayout = () => {
                 </div>
             </main>
 
+            {/* 4. Footer */}
+            <Footer />
         </div>
     );
 };
