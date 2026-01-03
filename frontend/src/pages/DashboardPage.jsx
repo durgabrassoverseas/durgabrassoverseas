@@ -31,7 +31,7 @@ const StatCard = ({ title, value, IconComponent, color, navigateTo }) => {
 
 const ActivityItem = ({ icon: Icon, color, description, time }) => {
     return (
-        <li className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-xl transition duration-150 border-b border-gray-50 last:border-0">
+        <li className="flex items-start space-x-3 p-3== hover:bg-gray-50 rounded-xl transition duration-150 border-b border-gray-50 last:border-0">
             <div className={`p-2 rounded-full ${color.bg} mt-0.5 shrink-0`}>
                 <Icon className={`h-4 w-4 ${color.text}`} />
             </div>
@@ -88,7 +88,7 @@ const DashboardPage = () => {
 
     return (
         /* Reduced padding on mobile (p-4), kept p-8 for desktop */
-        <div className="bg-gray-50 p-4 md:p-8 min-h-screen">
+        <div className="min-h-screen">
             
             <header className="mb-6 md:mb-10">
                 <h1 className="text-2xl md:text-4xl font-black text-gray-900 flex items-center gap-3">
