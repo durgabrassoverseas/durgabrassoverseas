@@ -1,5 +1,5 @@
-const CLOUD_NAME='dzkiozbbk'
-const UPLOAD_PRESET='ClientMBD'
+const CLOUD_NAME='dwlwrwwib'
+const UPLOAD_PRESET='DurgaBrassOverseas'
 
 export const uploadImageToCloudinary = async (file) => {
   if (!file) return null;

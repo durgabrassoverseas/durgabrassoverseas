@@ -4,7 +4,7 @@ import axios from "axios";
 // Function to ping your deployed app
 const pingApp = async () => {
   try {
-    const response = await axios.get("https://sfhskdhj/");
+    const response = await axios.get("https://durgabrassoverseasbackend.onrender.com/");
     console.log("✅ Ping successful at", new Date().toLocaleTimeString());
   } catch (error) {
     console.error("❌ Ping failed:", error.message);
