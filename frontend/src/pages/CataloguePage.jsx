@@ -123,9 +123,11 @@ const CataloguePage = () => {
           <h1 className="text-5xl font-extralight tracking-tighter">
             The <span className="font-medium text-slate-900">Catalogue</span>
           </h1>
+    
 
 
           <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+            
             {/* Search */}
             <div className="relative flex-grow lg:flex-grow-0 lg:min-w-[320px]">
               <div className="flex items-center bg-white border border-slate-200 rounded-full px-5 py-3 shadow-sm focus-within:ring-2 ring-slate-200 transition-all">
@@ -154,6 +156,14 @@ const CataloguePage = () => {
               ))}
             </select>
           </div>
+
+          <button
+                  onClick={() => setIsFullscreen(true)}
+                  className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all"
+                  title="View Fullscreen"
+                >
+                  <Maximize2 size={20} className="text-slate-900" />
+                </button>
         </header>
 
 
@@ -255,7 +265,7 @@ const CataloguePage = () => {
         <div className="fixed inset-0 bg-black z-[100] flex">
 
           {/* Left Side - Details (20%) */}
-          <div className="w-[80%] relative flex items-center justify-center p-12">
+          <div className="w-[80%] relative flex items-center justify-center p-4">
             <img
               src={currentProduct.imageURL || "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1500"}
               alt={currentProduct.name}
