@@ -155,15 +155,18 @@ const CataloguePage = () => {
                 <option key={cat._id} value={cat._id}>{cat.name}</option>
               ))}
             </select>
-          </div>
 
-          <button
+            <button
                   onClick={() => setIsFullscreen(true)}
                   className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all"
                   title="View Fullscreen"
                 >
                   <Maximize2 size={20} className="text-slate-900" />
                 </button>
+                
+          </div>
+
+          
         </header>
 
 
