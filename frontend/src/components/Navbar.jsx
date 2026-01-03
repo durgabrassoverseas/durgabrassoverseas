@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Added useNavigate
 import { LayoutDashboard, Package, Boxes, Grid, Menu, X, LogOut } from "lucide-react"; // Added LogOut icon
+import logo from "../assets/logo.png"; // adjust path if needed
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,14 +28,18 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gray-900 text-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
         <div className="flex items-center justify-between h-16">
           
           {/* Branding */}
           <div className="flex items-center gap-2">
-            <LayoutDashboard className="w-6 h-6 text-indigo-400" />
+            <img
+    src={logo}
+    alt="Admin Logo"
+    className="w-12 h-12 object-fit rounded-full mr-1"
+  />
             <span className="text-lg font-extrabold tracking-wider text-white">
-              ADMIN<span className="text-indigo-400">PANEL</span>
+              DURGA BRASS <span className="text-indigo-400">OVERSEAS</span>
             </span>
           </div>
 
