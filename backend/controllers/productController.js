@@ -198,6 +198,21 @@ export const getProducts = async (req, res) => {
         },
       },
 
+       {
+        $lookup: {
+          from: "categories",          // collection name (IMPORTANT)
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      {
+        $unwind: {
+          path: "$category",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
       { $skip: (page - 1) * limit },
       { $limit: Number(limit) },
     ]);

@@ -1226,6 +1226,8 @@ const ProductsPage = () => {
   );
   const [currentPage, setCurrentPage] = useState(1);
 
+  console.log(products);
+
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
