@@ -122,58 +122,58 @@ export const fetchDashboardStats = createAsyncThunk(
   }
 );
 
-export const fetchFinishes = createAsyncThunk(
-  "admin/fetchFinishes",
-  async (_, thunkAPI) => {
-    try {
-      const res = await axiosInstance.get("/finish");
-      console.log("Fetch finishes response data:", res.data); // Debugging line
-      return res.data; // array of finishes
-    } catch (error) {
-      console.error("Fetch finishes error:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Fetch finishes failed"
-      );
-    }
-  }
-);
+// export const fetchFinishes = createAsyncThunk(
+//   "admin/fetchFinishes",
+//   async (_, thunkAPI) => {
+//     try {
+//       const res = await axiosInstance.get("/finish");
+//       console.log("Fetch finishes response data:", res.data); // Debugging line
+//       return res.data; // array of finishes
+//     } catch (error) {
+//       console.error("Fetch finishes error:", error);
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || "Fetch finishes failed"
+//       );
+//     }
+//   }
+// );
 
-export const createFinish = createAsyncThunk(
-  "admin/createFinish",
-  async ({ name, token }, thunkAPI) => {
-    try {
-      const res = await axiosInstance.post(
-        "/finish",
-        { name },
-      );
-      console.log("Create finish response data:", res.data); // Debugging line
-      return res.data; // newly created finish
-    } catch (error) {
-      console.error("Create finish error:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Create finish failed"
-      );
-    }
-  }
-);
+// export const createFinish = createAsyncThunk(
+//   "admin/createFinish",
+//   async ({ name, token }, thunkAPI) => {
+//     try {
+//       const res = await axiosInstance.post(
+//         "/finish",
+//         { name },
+//       );
+//       console.log("Create finish response data:", res.data); // Debugging line
+//       return res.data; // newly created finish
+//     } catch (error) {
+//       console.error("Create finish error:", error);
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || "Create finish failed"
+//       );
+//     }
+//   }
+// );
 
-export const deleteFinish = createAsyncThunk(
-  "admin/deleteFinish",
-  async ({ id }, thunkAPI) => {
-    try {
-      const res = await axiosInstance.delete(
-        `/finish/${id}`,
-      );
-      console.log("Delete finish response data:", res.data); // Debugging line
-      return id; // return deleted finish id
-    } catch (error) {
-      console.error("Delete finish error:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Delete finish failed"
-      );
-    }
-  }
-);
+// export const deleteFinish = createAsyncThunk(
+//   "admin/deleteFinish",
+//   async ({ id }, thunkAPI) => {
+//     try {
+//       const res = await axiosInstance.delete(
+//         `/finish/${id}`,
+//       );
+//       console.log("Delete finish response data:", res.data); // Debugging line
+//       return id; // return deleted finish id
+//     } catch (error) {
+//       console.error("Delete finish error:", error);
+//       return thunkAPI.rejectWithValue(
+//         error.response?.data?.message || "Delete finish failed"
+//       );
+//     }
+//   }
+// );
 
 export const fetchProducts = createAsyncThunk(
   "admin/fetchProducts",
@@ -210,7 +210,7 @@ const adminSlice = createSlice({
     categories: [],
     products: [],
     items: [],
-    finishes: [],
+    // finishes: [],
     stats: null,
     loading: false,
     error: null,
@@ -310,44 +310,44 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(fetchFinishes.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchFinishes.fulfilled, (state, action) => {
-        state.loading = false;
-        state.finishes = action.payload;
-      })
-      .addCase(fetchFinishes.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(createFinish.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createFinish.fulfilled, (state, action) => {
-        state.loading = false;
-        state.finishes.push(action.payload);
-      })
-      .addCase(createFinish.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(deleteFinish.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteFinish.fulfilled, (state, action) => {
-        state.loading = false;
-        state.finishes = state.finishes.filter(
-          (finish) => finish._id !== action.payload
-        );
-      })
-      .addCase(deleteFinish.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      // .addCase(fetchFinishes.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(fetchFinishes.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.finishes = action.payload;
+      // })
+      // .addCase(fetchFinishes.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload;
+      // })
+      // .addCase(createFinish.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(createFinish.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.finishes.push(action.payload);
+      // })
+      // .addCase(createFinish.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload;
+      // })
+      // .addCase(deleteFinish.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(deleteFinish.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.finishes = state.finishes.filter(
+      //     (finish) => finish._id !== action.payload
+      //   );
+      // })
+      // .addCase(deleteFinish.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload;
+      // })
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;

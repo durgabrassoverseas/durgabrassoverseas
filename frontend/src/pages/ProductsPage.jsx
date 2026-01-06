@@ -5,7 +5,6 @@ import {
   fetchCategories,
   updateProduct,
   createProduct,
-  fetchFinishes,
 } from "../redux/slices/adminSlice";
 import toast from "react-hot-toast";
 import {
@@ -1281,7 +1280,7 @@ const ProductsPage = () => {
 
   useEffect(() => {
     dispatch(fetchCategories());
-    dispatch(fetchFinishes());
+    // dispatch(fetchFinishes());
   }, [dispatch]);
 
 

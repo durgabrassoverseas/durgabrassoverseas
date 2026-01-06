@@ -10,7 +10,7 @@ const Navbar = () => {
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Categories", icon: Grid, path: "/admin/categories" },
-    { name: "Finishes", icon: Boxes, path: "/admin/finishes" },
+    // { name: "Finishes", icon: Boxes, path: "/admin/finishes" },
     { name: "Products", icon: Package, path: "/admin/products" },
     { name: "Catalogue", icon: Grid, path: "/admin/catalogue" },
   ];
