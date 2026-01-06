@@ -2,7 +2,7 @@ import "dotenv/config"; // <-- MUST be FIRST
 import express from "express";
 import connectDB from "./config/db.js";
 import cors from "cors";
-// import './utils/cron.js';
+import './utils/cron.js';
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
