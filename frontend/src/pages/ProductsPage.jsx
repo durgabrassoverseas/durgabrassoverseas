@@ -403,19 +403,18 @@ const EditableCategory = ({ product }) => {
 
 const EditableFinish = ({ product }) => {
   const dispatch = useDispatch();
-  const { finishes } = useSelector((state) => state.admin);
   const token = localStorage.getItem("token");
 
   const [editing, setEditing] = useState(false);
-  const initialFinish = product.finish?._id || "";
-  const [value, setValue] = useState(initialFinish);
+  // finish is now a string, so we use it directly
+  const [value, setValue] = useState(product.finish || "");
 
   useEffect(() => {
-    if (!editing) setValue(initialFinish);
-  }, [initialFinish, editing]);
+    if (!editing) setValue(product.finish || "");
+  }, [product.finish, editing]);
 
   const save = () => {
-    if (value === initialFinish) {
+    if (value === product.finish) {
       setEditing(false);
       return;
     }
@@ -439,40 +438,22 @@ const EditableFinish = ({ product }) => {
     <div className="flex items-center gap-2 min-h-8">
       {editing ? (
         <>
-          <select
+          <input
+            type="text"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onBlur={save}
-            className="border border-indigo-300 px-2 py-1 rounded-lg text-sm w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition"
-          >
-            <option value="">Select Finish</option>
-            {finishes.map((f) => (
-              <option key={f._id} value={f._id}>
-                {f.name}
-              </option>
-            ))}
-          </select>
-          <Check
-            size={16}
-            className="cursor-pointer text-green-600 hover:text-green-700 transition shrink-0"
-            onClick={save}
+            className="border border-indigo-300 px-2 py-1 rounded-lg text-sm w-full shadow-sm focus:ring-indigo-500"
           />
-          <X
-            size={16}
-            className="cursor-pointer text-red-500 hover:text-red-700 transition shrink-0"
-            onClick={() => setEditing(false)}
-          />
+          <Check size={16} className="cursor-pointer text-green-600" onClick={save} />
+          <X size={16} className="cursor-pointer text-red-500" onClick={() => setEditing(false)} />
         </>
       ) : (
         <>
           <span className="text-sm text-gray-700 w-full truncate">
-            {product.finish?.name || "—"}
+            {product.finish || "—"}
           </span>
-          <Pencil
-            size={14}
-            className="cursor-pointer text-gray-400 hover:text-indigo-600 transition shrink-0"
-            onClick={() => setEditing(true)}
-          />
+          <Pencil size={14} className="cursor-pointer text-gray-400" onClick={() => setEditing(true)} />
         </>
       )}
     </div>
@@ -902,23 +883,18 @@ const CreateProductModal = ({ onClose }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Finish
-              </label>
-              <select
-                name="finish"
-                value={formData.finish}
-                onChange={handleChange}
-                className={inputClasses}
-              >
-                <option value="">Select Finish</option>
-                {finishes.map((f) => (
-                  <option key={f._id} value={f._id}>
-                    {f.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+  <label className="block text-sm font-semibold text-gray-700 mb-1">
+    Finish
+  </label>
+  <input
+    name="finish"
+    type="text"
+    placeholder="e.g. Matte, Polished, Chrome"
+    value={formData.finish}
+    onChange={handleChange}
+    className={inputClasses}
+  />
+</div>
 
             {/* Description */}
             <div className="md:col-span-2">
@@ -1156,8 +1132,13 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                   </span>
                 </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
-                  {product.finish?.name || "—"}
-                </td>
+  <span 
+    className="block max-w-[150px] truncate" 
+    title={product.finish}
+  >
+    {product.finish || "—"}
+  </span>
+</td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm font-bold text-gray-800">
                   {formatCurrency(product.price)}
                 </td>
@@ -1240,7 +1221,7 @@ MAIN PAGE (Updated Search: no SKU)
 ----------------------------------- */
 const ProductsPage = () => {
   const dispatch = useDispatch();
-  const { products, categories, pagination, loading, finishes } = useSelector(
+  const { products, categories, pagination, loading } = useSelector(
     (state) => state.admin
   );
   const [currentPage, setCurrentPage] = useState(1);
