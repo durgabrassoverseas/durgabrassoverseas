@@ -22,12 +22,13 @@ import {
   Globe,
   Box,
   Download,
-  ChevronUp, 
+  ChevronUp,
   ChevronDown
 } from "lucide-react";
 import { downloadQR, downloadAllQRsZip } from '../utils/qrDownloaders.js';
 import { exportProductsToExcel } from "../utils/excelExporter.js";
 import { uploadImageToCloudinary } from "../utils/cloudinaryUploader.js";
+
 /* ----------------------------------
 PRODUCT FIELDS (Metadata for Modals)
 ----------------------------------- */
@@ -37,7 +38,6 @@ const PRODUCT_FIELDS = [
   { label: "Description", field: "description", type: "textarea" },
   { label: "Master Pack", field: "masterPack", type: "text" },
   { label: "Weight (kg)", field: "weight", type: "text" },
-  { label: "Other Material", field: "otherMaterial", type: "text" },
   { label: "Price", field: "price", type: "number" },
   { label: "Discount %", field: "discountPercent", type: "number" },
 ];
@@ -129,9 +129,8 @@ const EditableField = ({ value, field, productId, type = "text" }) => {
     onChange: (e) => setLocalValue(e.target.value),
     onBlur: save,
     onKeyDown: handleKeyDown,
-    className: `border border-indigo-300 px-2 py-1 rounded-lg w-full text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition ${
-      type === "textarea" ? "min-h-[80px]" : ""
-    }`,
+    className: `border border-indigo-300 px-2 py-1 rounded-lg w-full text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition ${type === "textarea" ? "min-h-[80px]" : ""
+      }`,
     placeholder: `Enter ${field}`,
   };
 
@@ -166,6 +165,151 @@ const EditableField = ({ value, field, productId, type = "text" }) => {
             className="cursor-pointer text-gray-400 hover:text-indigo-600 transition shrink-0"
             onClick={() => setEditing(true)}
           />
+        </>
+      )}
+    </div>
+  );
+};
+
+/* ----------------------------------
+EDITABLE OTHER MATERIALS (NEW - ARRAY SUPPORT)
+----------------------------------- */
+const EditableOtherMaterials = ({ productId, materials = [] }) => {
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
+  
+  const [editing, setEditing] = useState(false);
+  const [localMaterials, setLocalMaterials] = useState(Array.isArray(materials) ? materials : []);
+  const [newMaterial, setNewMaterial] = useState("");
+
+  useEffect(() => {
+    if (!editing) {
+      setLocalMaterials(Array.isArray(materials) ? materials : []);
+    }
+  }, [materials, editing]);
+
+  const addMaterial = () => {
+    if (newMaterial.trim() === "") return;
+    setLocalMaterials([...localMaterials, newMaterial.trim()]);
+    setNewMaterial("");
+  };
+
+  const removeMaterial = (index) => {
+    setLocalMaterials(localMaterials.filter((_, i) => i !== index));
+  };
+
+  const save = () => {
+    const cleanedMaterials = localMaterials.filter(m => m.trim() !== "");
+    
+    dispatch(
+      updateProduct({
+        productId,
+        field: "otherMaterial",
+        value: cleanedMaterials,
+        token,
+      })
+    )
+      .unwrap()
+      .then(() => toast.success("Materials updated"))
+      .catch((err) => toast.error(err.message || "Update failed"));
+
+    setEditing(false);
+  };
+
+  const cancel = () => {
+    setLocalMaterials(Array.isArray(materials) ? materials : []);
+    setNewMaterial("");
+    setEditing(false);
+  };
+
+  return (
+    <div className="flex flex-col gap-2 min-h-8">
+      {editing ? (
+        <div className="space-y-2">
+          {/* Existing Materials */}
+          <div className="flex flex-col gap-1">
+            {localMaterials.map((material, index) => (
+              <div key={index} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={material}
+                  onChange={(e) => {
+                    const updated = [...localMaterials];
+                    updated[index] = e.target.value;
+                    setLocalMaterials(updated);
+                  }}
+                  className="border border-indigo-300 px-2 py-1 rounded-lg flex-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+                <X
+                  size={16}
+                  className="cursor-pointer text-red-500 hover:text-red-700 transition shrink-0"
+                  onClick={() => removeMaterial(index)}
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Add New Material */}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={newMaterial}
+              onChange={(e) => setNewMaterial(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addMaterial();
+                }
+              }}
+              placeholder="Add material..."
+              className="border border-indigo-300 px-2 py-1 rounded-lg flex-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <PlusCircle
+              size={16}
+              className="cursor-pointer text-green-600 hover:text-green-700 transition shrink-0"
+              onClick={addMaterial}
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 justify-end">
+            <button
+              onClick={save}
+              className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition"
+            >
+              <Check size={14} />
+              Save
+            </button>
+            <button
+              onClick={cancel}
+              className="flex items-center gap-1 px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition"
+            >
+              <X size={14} />
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-1 items-center">
+            {localMaterials.length > 0 ? (
+              localMaterials.map((material, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium"
+                >
+                  {material}
+                </span>
+              ))
+            ) : (
+              <span className="text-sm text-gray-500">—</span>
+            )}
+            <Pencil
+              size={14}
+              className="cursor-pointer text-gray-400 hover:text-indigo-600 transition shrink-0"
+              onClick={() => setEditing(true)}
+            />
+          </div>
         </>
       )}
     </div>
@@ -336,7 +480,6 @@ const EditableFinish = ({ product }) => {
   );
 };
 
-
 const EditableImage = ({ productId, currentImage }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -355,16 +498,16 @@ const EditableImage = ({ productId, currentImage }) => {
     try {
       setUploading(true);
       const loadingToast = toast.loading("Uploading image...");
-      
+
       const imageUrl = await uploadImageToCloudinary(file);
-      
+
       await dispatch(updateProduct({
         productId,
         field: "imageURL",
         value: imageUrl,
         token
       })).unwrap();
-      
+
       toast.success("Image updated successfully", { id: loadingToast });
     } catch (err) {
       toast.error("Failed to update image", { id: "upload-error" });
@@ -377,10 +520,10 @@ const EditableImage = ({ productId, currentImage }) => {
     <div className="relative group w-full h-full min-h-30 max-h-30 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-indigo-300">
       {currentImage ? (
         <>
-          <img 
-            src={currentImage} 
-            alt="Product" 
-            className="w-full h-full object-contain p-2" 
+          <img
+            src={currentImage}
+            alt="Product"
+            className="w-full h-full object-contain p-2"
           />
           {/* Overlay on hover */}
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -415,123 +558,134 @@ const ProductModal = ({ product, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-opacity duration-300 ease-out">
-  <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] transition-transform duration-300 ease-out">
+      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] transition-transform duration-300 ease-out">
 
-    {/* HEADER */}
-    <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-indigo-50/70 rounded-t-2xl">
-      <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-        <Package className="w-5 h-5 text-indigo-600" />
-        Edit Product: {product.name}
-      </h2>
-      <button
-        onClick={onClose}
-        className="text-gray-500 hover:text-black p-2 rounded-full hover:bg-gray-200 transition"
-      >
-        <X className="w-5 h-5" />
-      </button>
-    </div>
-
-    {/* BODY */}
-    <div className="p-6 overflow-y-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {/* CATEGORY / FINISH (LEFT) + IMAGE (RIGHT) */}
-        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border rounded-xl bg-indigo-50/50">
-
-          {/* LEFT COLUMN */}
-          <div className="md:col-span-2 space-y-4">
-            <div className="p-3 bg-white border rounded-lg shadow-sm">
-              <label className="text-xs font-semibold uppercase text-gray-700 mb-1 block">
-                Category
-              </label>
-              <EditableCategory product={product} />
-            </div>
-
-            <div className="p-3 bg-white border rounded-lg shadow-sm">
-              <label className="text-xs font-semibold uppercase text-gray-700 mb-1 block">
-                Finish
-              </label>
-              <EditableFinish product={product} />
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN – IMAGE */}
-          <div className="p-3 bg-white border rounded-lg shadow-sm flex flex-col">
-            <label className="text-xs font-bold uppercase text-gray-500 mb-2 block">
-              Product Photo
-            </label>
-            <EditableImage
-              productId={product._id}
-              currentImage={product.imageURL}
-            />
-          </div>
+        {/* HEADER */}
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-indigo-50/70 rounded-t-2xl">
+          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <Package className="w-5 h-5 text-indigo-600" />
+            Edit Product: {product.name}
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-black p-2 rounded-full hover:bg-gray-200 transition"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* OTHER FIELDS */}
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PRODUCT_FIELDS.filter((f) => f.field !== "description").map(
-            ({ label, field, type }) => (
-              <div
-                key={field}
-                className="space-y-1 p-2 bg-white border rounded-lg shadow-sm"
-              >
-                <label className="text-xs font-semibold uppercase text-gray-500 block">
-                  {label}
+        {/* BODY */}
+        <div className="p-6 overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* CATEGORY / FINISH (LEFT) + IMAGE (RIGHT) */}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border rounded-xl bg-indigo-50/50">
+
+              {/* LEFT COLUMN */}
+              <div className="md:col-span-2 space-y-4">
+                <div className="p-3 bg-white border rounded-lg shadow-sm">
+                  <label className="text-xs font-semibold uppercase text-gray-700 mb-1 block">
+                    Category
+                  </label>
+                  <EditableCategory product={product} />
+                </div>
+
+                <div className="p-3 bg-white border rounded-lg shadow-sm">
+                  <label className="text-xs font-semibold uppercase text-gray-700 mb-1 block">
+                    Finish
+                  </label>
+                  <EditableFinish product={product} />
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN – IMAGE */}
+              <div className="p-3 bg-white border rounded-lg shadow-sm flex flex-col">
+                <label className="text-xs font-bold uppercase text-gray-500 mb-2 block">
+                  Product Photo
                 </label>
-                <EditableField
-                  value={product[field]}
-                  field={field}
-                  type={type}
+                <EditableImage
                   productId={product._id}
+                  currentImage={product.imageURL}
                 />
               </div>
-            )
-          )}
+            </div>
+
+            {/* OTHER FIELDS */}
+            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {PRODUCT_FIELDS.filter((f) => f.field !== "description").map(
+                ({ label, field, type }) => (
+                  <div
+                    key={field}
+                    className="space-y-1 p-2 bg-white border rounded-lg shadow-sm"
+                  >
+                    <label className="text-xs font-semibold uppercase text-gray-500 block">
+                      {label}
+                    </label>
+                    <EditableField
+                      value={product[field]}
+                      field={field}
+                      type={type}
+                      productId={product._id}
+                    />
+                  </div>
+                )
+              )}
+            </div>
+
+            {/* DESCRIPTION */}
+            <div className="md:col-span-2 space-y-1 p-2 bg-white border rounded-lg shadow-sm">
+              <label className="text-xs font-semibold uppercase text-gray-500 block">
+                Description
+              </label>
+              <EditableField
+                value={product.description}
+                field="description"
+                type="textarea"
+                productId={product._id}
+              />
+            </div>
+
+            {/* OTHER MATERIALS (NEW) */}
+            <div className="md:col-span-2 space-y-1 p-3 bg-white border rounded-lg shadow-sm">
+              <label className="text-xs font-semibold uppercase text-gray-500 block">
+                Other Materials
+              </label>
+              <EditableOtherMaterials 
+                productId={product._id}
+                materials={product.otherMaterial || []}
+              />
+            </div>
+
+            {/* SIZE INFO */}
+            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
+              <div className="p-3 border rounded-lg bg-white shadow-sm">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+                  <Box className="w-3 h-3" /> Item Dimensions (")
+                </label>
+                <span className="text-sm font-medium text-gray-700">
+                  {formatSize(product.itemSize)}
+                </span>
+              </div>
+
+              <div className="p-3 border rounded-lg bg-white shadow-sm">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+                  <Box className="w-3 h-3" /> Carton Dimensions (")
+                </label>
+                <span className="text-sm font-medium text-gray-700">
+                  {formatSize(product.cartonSize)}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* DESCRIPTION */}
-        <div className="md:col-span-2 space-y-1 p-2 bg-white border rounded-lg shadow-sm">
-          <label className="text-xs font-semibold uppercase text-gray-500 block">
-            Description
-          </label>
-          <EditableField
-            value={product.description}
-            field="description"
-            type="textarea"
-            productId={product._id}
-          />
-        </div>
-
-        {/* SIZE INFO */}
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
-          <div className="p-3 border rounded-lg bg-white shadow-sm">
-            <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-              <Box className="w-3 h-3" /> Item Dimensions (")
-            </label>
-            <span className="text-sm font-medium text-gray-700">
-              {formatSize(product.itemSize)}
-            </span>
-          </div>
-
-          <div className="p-3 border rounded-lg bg-white shadow-sm">
-            <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-              <Box className="w-3 h-3" /> Carton Dimensions (")
-            </label>
-            <span className="text-sm font-medium text-gray-700">
-              {formatSize(product.cartonSize)}
-            </span>
-          </div>
+        {/* FOOTER */}
+        <div className="px-6 py-3 border-t border-gray-100 text-right text-sm text-gray-500 bg-gray-50 rounded-b-2xl">
+          Click the <Pencil className="w-3 h-3 inline-block" /> icon to edit. Changes
+          save automatically on blur/enter.
         </div>
       </div>
     </div>
-
-    {/* FOOTER */}
-    <div className="px-6 py-3 border-t border-gray-100 text-right text-sm text-gray-500 bg-gray-50 rounded-b-2xl">
-      Click the <Pencil className="w-3 h-3 inline-block" /> icon to edit. Changes
-      save automatically on blur/enter.
-    </div>
-  </div>
-</div>
   );
 };
 
@@ -542,10 +696,11 @@ const CreateProductModal = ({ onClose }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const { categories, finishes } = useSelector((state) => state.admin);
-  
+
   const [isCreating, setIsCreating] = useState(false);
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null); // Added for UI feedback
+  const [imagePreview, setImagePreview] = useState(null);
+  const [materialInput, setMaterialInput] = useState("");
 
   const initialCategory = categories.length > 0 ? categories[0]._id : "";
 
@@ -557,14 +712,13 @@ const CreateProductModal = ({ onClose }) => {
     masterPack: "",
     weight: "",
     finish: "",
-    otherMaterial: "",
+    otherMaterial: [],
     price: "",
     discountPercent: "",
     itemSize: { length: "", width: "", height: "" },
     cartonSize: { length: "", width: "", height: "" },
   });
 
-  // Handle image selection and preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -573,7 +727,7 @@ const CreateProductModal = ({ onClose }) => {
         return;
       }
       setImageFile(file);
-      setImagePreview(URL.createObjectURL(file)); // Create local URL for preview
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -590,6 +744,22 @@ const CreateProductModal = ({ onClose }) => {
     }));
   };
 
+  const addMaterial = () => {
+    if (materialInput.trim() === "") return;
+    setFormData(prev => ({
+      ...prev,
+      otherMaterial: [...prev.otherMaterial, materialInput.trim()]
+    }));
+    setMaterialInput("");
+  };
+
+  const removeMaterial = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      otherMaterial: prev.otherMaterial.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.category) {
@@ -601,14 +771,12 @@ const CreateProductModal = ({ onClose }) => {
       setIsCreating(true);
       let imageUrl = "";
 
-      // 1. Upload to Cloudinary if a file is selected
       if (imageFile) {
         const uploadToast = toast.loading("Uploading product image...");
         imageUrl = await uploadImageToCloudinary(imageFile);
         toast.success("Image uploaded!", { id: uploadToast });
       }
 
-      // 2. Prepare final data object
       const productData = {
         ...formData,
         imageURL: imageUrl,
@@ -624,9 +792,8 @@ const CreateProductModal = ({ onClose }) => {
         ),
       };
 
-      // 3. Dispatch create action
       await dispatch(createProduct({ productData, token })).unwrap();
-      
+
       toast.success("Product created successfully!");
       onClose();
       dispatch(fetchProducts());
@@ -667,7 +834,7 @@ const CreateProductModal = ({ onClose }) => {
               {imagePreview ? (
                 <div className="relative w-32 h-32 mb-2">
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg shadow-md" />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => { setImageFile(null); setImagePreview(null); }}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
@@ -800,6 +967,56 @@ const CreateProductModal = ({ onClose }) => {
               ))}
             </div>
 
+            {/* OTHER MATERIALS (NEW) */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Other Materials
+              </label>
+              
+              {/* Display existing materials */}
+              <div className="flex flex-wrap gap-2 mb-2">
+                {formData.otherMaterial.map((material, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm"
+                  >
+                    {material}
+                    <X
+                      size={14}
+                      className="cursor-pointer hover:text-red-600"
+                      onClick={() => removeMaterial(index)}
+                    />
+                  </span>
+                ))}
+              </div>
+
+              {/* Add new material */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={materialInput}
+                  onChange={(e) => setMaterialInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addMaterial();
+                    }
+                  }}
+                  placeholder="Enter material and press Enter or +"
+                  className={inputClasses}
+                  disabled={isCreating}
+                />
+                <button
+                  type="button"
+                  onClick={addMaterial}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+                  disabled={isCreating || !materialInput.trim()}
+                >
+                  <PlusCircle className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
             {/* Size Fields */}
             <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
               <div className="space-y-2 p-3 border rounded-lg bg-gray-50/50">
@@ -845,7 +1062,7 @@ const CreateProductModal = ({ onClose }) => {
           </div>
 
           {/* FOOTER */}
-         <div className="pt-6 border-t mt-6 text-right">
+          <div className="pt-6 border-t mt-6 text-right">
             <button
               type="submit"
               className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 shadow-lg transform hover:-translate-y-0.5"
@@ -871,29 +1088,28 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
         <table className="w-full divide-y divide-gray-200">
           <thead className="bg-linear-to-r from-indigo-50 to-purple-50">
             <tr>
-              {/* Reduced padding from px-4 to px-2 throughout */}
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Img</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
-  <div className="flex items-center gap-1">
-    Item #
-    <div className="flex flex-col">
-      <ChevronUp
-            className={`w-3 h-3 cursor-pointer ${sortOrder === "asc" ? "text-gray-400" : "text-indigo-600"}`}
-            onClick={() => {
-              setSortOrder("asc");
-              setCurrentPage(1);
-            }}
-          />
-      <ChevronDown
-            className={`w-3 h-3 cursor-pointer ${sortOrder === "desc" ? "text-gray-400" : "text-indigo-600"}`}
-            onClick={() => {
-              setSortOrder("desc");
-              setCurrentPage(1);
-            }}
-          />
-    </div>
-  </div>
-</th>
+                <div className="flex items-center gap-1">
+                  Item #
+                  <div className="flex flex-col">
+                    <ChevronUp
+                      className={`w-3 h-3 cursor-pointer ${sortOrder === "asc" ? "text-gray-400" : "text-indigo-600"}`}
+                      onClick={() => {
+                        setSortOrder("asc");
+                        setCurrentPage(1);
+                      }}
+                    />
+                    <ChevronDown
+                      className={`w-3 h-3 cursor-pointer ${sortOrder === "desc" ? "text-gray-400" : "text-indigo-600"}`}
+                      onClick={() => {
+                        setSortOrder("desc");
+                        setCurrentPage(1);
+                      }}
+                    />
+                  </div>
+                </div>
+              </th>
               <th className="px-3 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Product</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Category</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Finish</th>
@@ -908,7 +1124,7 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
               <th className="px-2 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
             </tr>
           </thead>
-         <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-gray-100 bg-white">
             {products.map((product) => (
               <tr key={product._id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="px-2 py-2 whitespace-nowrap">
@@ -960,8 +1176,22 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
                   {product.weight ? `${product.weight}kg` : "—"}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px] truncate">
-                  {product.otherMaterial || "—"}
+                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
+                  <div className="flex flex-wrap gap-1">
+                    {product.otherMaterial && Array.isArray(product.otherMaterial) && product.otherMaterial.length > 0 ? (
+                      product.otherMaterial.map((material, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-[10px] truncate max-w-[70px]"
+                          title={material}
+                        >
+                          {material}
+                        </span>
+                      ))
+                    ) : (
+                      "—"
+                    )}
+                  </div>
                 </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
                   {formatSize(product.cartonSize)}
@@ -1023,41 +1253,38 @@ const ProductsPage = () => {
   // Filter and Search States
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [sortOrder, setSortOrder] = useState("desc"); // asc | desc
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // --- 1. Debounce Logic ---
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-      setCurrentPage(1); // Reset to page 1 when search changes
-    }, 500); // 500ms delay
+      setCurrentPage(1);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
   useEffect(() => {
-  dispatch(
-    fetchProducts({
-      search: debouncedSearchTerm,
-      sort: sortOrder,
-      page: currentPage,
-      limit: 100,
-      categoryId: selectedCategory,
-    })
-  );
-}, [dispatch, debouncedSearchTerm, sortOrder, currentPage, selectedCategory]);
+    dispatch(
+      fetchProducts({
+        search: debouncedSearchTerm,
+        sort: sortOrder,
+        page: currentPage,
+        limit: 100,
+        categoryId: selectedCategory,
+      })
+    );
+  }, [dispatch, debouncedSearchTerm, sortOrder, currentPage, selectedCategory]);
 
 
   useEffect(() => {
-    // dispatch(fetchProducts());
     dispatch(fetchCategories());
     dispatch(fetchFinishes());
   }, [dispatch]);
 
 
-  // 1. ADD THE DOWNLOAD HANDLER
   const handleDownloadAllQRZips = async () => {
     if (products.length === 0) {
       toast.error("No products available to download.");
@@ -1067,9 +1294,9 @@ const ProductsPage = () => {
     try {
       setIsDownloadingAll(true);
       toast.loading("Generating QR codes, please wait...", { id: "qr-zip" });
-      
+
       await downloadAllQRsZip(products);
-      
+
       toast.success("QR ZIP downloaded successfully!", { id: "qr-zip" });
     } catch (error) {
       toast.error("Failed to generate ZIP file.", { id: "qr-zip" });
@@ -1083,7 +1310,7 @@ const ProductsPage = () => {
       toast.error("No data to export");
       return;
     }
-    
+
     try {
       exportProductsToExcel(products);
       toast.success("Excel file generated!");
@@ -1093,11 +1320,10 @@ const ProductsPage = () => {
     }
   };
 
-// 2. Reset to page 1 when category changes
   const handleCategoryChange = (e) => {
     console.log(e.target.value);
     setSelectedCategory(e.target.value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
   const selectedProduct = useMemo(
@@ -1116,58 +1342,51 @@ const ProductsPage = () => {
     );
   }
 
-
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-       <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
-  <div>
-    {/* Optimized font size for mobile (text-2xl) vs desktop (text-4xl) */}
-    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-1">
-      Product Catalog
-    </h1>
-    <p className="text-gray-500 text-sm sm:text-base lg:text-lg">
-      Manage your product templates ({products.length} total)
-    </p>
-  </div>
+        <header className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-1">
+              Product Catalog
+            </h1>
+            <p className="text-gray-500 text-sm sm:text-base lg:text-lg">
+              Manage your product templates ({products.length} total)
+            </p>
+          </div>
 
-  {/* ACTION BUTTONS: Grid on mobile, Flex on tablet/desktop */}
-  <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
-    
-    {/* Export Excel - Half width on mobile */}
-    <button
-      onClick={handleExportExcel}
-      className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
-    >
-      <Download className="w-4 h-4 shrink-0" />
-      <span className="truncate">Excel</span>
-    </button>
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
+            <button
+              onClick={handleExportExcel}
+              className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
+            >
+              <Download className="w-4 h-4 shrink-0" />
+              <span className="truncate">Excel</span>
+            </button>
 
-    {/* Download All QR - Half width on mobile */}
-    <button
-      onClick={handleDownloadAllQRZips}
-      disabled={isDownloadingAll}
-      className="flex items-center justify-center gap-2 bg-green-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition shadow disabled:opacity-50"
-    >
-      {isDownloadingAll ? (
-        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
-      ) : (
-        <Download className="w-4 h-4 shrink-0" />
-      )}
-      <span className="truncate">{isDownloadingAll ? "..." : "All QRs"}</span>
-    </button>
+            <button
+              onClick={handleDownloadAllQRZips}
+              disabled={isDownloadingAll}
+              className="flex items-center justify-center gap-2 bg-green-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition shadow disabled:opacity-50"
+            >
+              {isDownloadingAll ? (
+                <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+              ) : (
+                <Download className="w-4 h-4 shrink-0" />
+              )}
+              <span className="truncate">{isDownloadingAll ? "..." : "All QRs"}</span>
+            </button>
 
-    {/* Create Product - Full width on mobile for emphasis */}
-    <button
-      onClick={() => setIsCreateModalOpen(true)}
-      className="col-span-2 sm:col-auto flex items-center justify-center gap-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:from-indigo-700 hover:to-purple-700 transition shadow order-first sm:order-last"
-    >
-      <PlusCircle className="w-5 h-5 shrink-0" />
-      <span>Create New Product</span>
-    </button>
-  </div>
-</header>
+            <button
+              onClick={() => setIsCreateModalOpen(true)}
+              className="col-span-2 sm:col-auto flex items-center justify-center gap-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:from-indigo-700 hover:to-purple-700 transition shadow order-first sm:order-last"
+            >
+              <PlusCircle className="w-5 h-5 shrink-0" />
+              <span>Create New Product</span>
+            </button>
+          </div>
+        </header>
 
         {/* Filters & Search */}
         <div className="flex flex-col lg:flex-row gap-4 mb-8 p-6 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/50">
@@ -1221,7 +1440,7 @@ const ProductsPage = () => {
             Showing page <span className="font-bold text-gray-900">{pagination?.currentPage}</span> of{" "}
             <span className="font-bold text-gray-900">{pagination?.totalPages}</span>
           </div>
-          
+
           <div className="flex gap-2">
             <button
               disabled={currentPage === 1 || loading}

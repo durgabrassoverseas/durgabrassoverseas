@@ -14,8 +14,9 @@ const productSchema = new mongoose.Schema({
   masterPack: String,
   cartonSize: {length: String, width: String, height: String},
   weight: String,
-  finish: { type: mongoose.Schema.Types.ObjectId, ref: "Finish" },
-  otherMaterial: String,
+  // finish: { type: mongoose.Schema.Types.ObjectId, ref: "Finish" },
+  finish: { type:String },
+  otherMaterial: {type: [String]},
   price: { type: Number, required: true }, // base price
   discountPercent: Number, // discount percentage
 

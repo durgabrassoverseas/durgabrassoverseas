@@ -35,9 +35,10 @@ export const createProduct = async (req, res) => {
     // 🔥 Populate category & finish for Redux
     const populatedProduct = await Product.findById(newProduct._id)
       .populate("category", "name")   // or { path: "category", select: "name" }
-      .populate("finish", "name");    // same here if finish is a ref
+      // .populate("finish", "name");    // same here if finish is a ref
 
     res.json({ success: true, product: populatedProduct });
+    console.log("Product created:", populatedProduct);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err.message });
@@ -84,7 +85,7 @@ export const updateProductField = async (req, res) => {
       id,
       { $set: updateData },
       { new: true }
-    ).populate("category").populate("finish");
+    ).populate("category");
 
     if (!updatedProduct) {
       return res.status(404).json({ error: "Product not found" });
@@ -96,6 +97,7 @@ export const updateProductField = async (req, res) => {
       product: updatedProduct,
     });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -117,7 +119,7 @@ export const deleteProduct = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
-    const products = await Product.find({ category: categoryId }).populate("category").populate("finish");
+    const products = await Product.find({ category: categoryId }).populate("category");
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -127,7 +129,7 @@ export const getProductsByCategory = async (req, res) => {
 export const getProductByItemNumber = async (req, res) => {
   try {
     const { itemNumber } = req.params;
-    const product = await Product.findOne({ itemNumber }).populate("category").populate("finish");
+    const product = await Product.findOne({ itemNumber }).populate("category");
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
@@ -166,7 +168,7 @@ export const getProducts = async (req, res) => {
       filter.category = category;
     }
     // 🔢 SORT
-    const products = await Product.find(filter).populate("category").populate("finish")
+    const products = await Product.find(filter).populate("category")
       .sort({ createdAt: sort === "asc" ? 1 : -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit));
