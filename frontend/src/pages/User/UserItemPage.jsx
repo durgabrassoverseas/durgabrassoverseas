@@ -123,7 +123,7 @@ const UserItemPage = () => {
                     {/* HEADER SECTION - Responsive */}
                     <div className="flex items-start justify-between gap-3 pb-3 lg:pb-4 border-b">
                         <div className="flex-1 min-w-0">
-                            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold md:font-extrabold text-gray-900 leading-tight mb-1 truncate">
+                            <h1 className="text-2xl md:text-2xl lg:text-3xl font-bold md:font-extrabold text-gray-900 leading-tight mb-1 truncate">
                                 {product.name}
                             </h1>
                             
