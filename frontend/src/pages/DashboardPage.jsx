@@ -8,7 +8,7 @@ import BarcodeScannerComponent from "react-qr-barcode-scanner";
 const COLOR_CLASSES = {
     indigo: { border: "border-indigo-600", text: "text-indigo-700", bg: "bg-indigo-100/70" },
     green: { border: "border-green-600", text: "text-green-700", bg: "bg-green-100/70" },
-    orange: { border: "border-orange-600", text: "text-orange-700", bg: "bg-orange-100/70" },
+    // orange: { border: "border-orange-600", text: "text-orange-700", bg: "bg-orange-100/70" },
 };
 
 const StatCard = ({ title, value, IconComponent, color, navigateTo }) => {
@@ -58,7 +58,7 @@ const DashboardPage = () => {
     const kpiData = [
         { id: 1, title: "Categories", value: stats?.totalCategories ?? 0, IconComponent: Grid, color: "indigo", navigateTo: "/admin/categories" },
         { id: 2, title: "Products", value: stats?.totalProducts ?? 0, IconComponent: Package, color: "green", navigateTo: "/admin/products" },
-        { id: 3, title: "Finishes", value: stats?.totalFinishes ?? 0, IconComponent: Boxes, color: "orange", navigateTo: "/admin/finishes" },
+        // { id: 3, title: "Finishes", value: stats?.totalFinishes ?? 0, IconComponent: Boxes, color: "orange", navigateTo: "/admin/finishes" },
     ];
 
     const activityFeedData = [
@@ -114,7 +114,7 @@ const DashboardPage = () => {
 
             
             {/* KPI Grid: 1 column on mobile, 3 on large screens */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-6 mb-8">
                 {kpiData.map(kpi => (
                     <StatCard key={kpi.id} {...kpi} />
                 ))}
