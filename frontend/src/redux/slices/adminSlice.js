@@ -46,7 +46,9 @@ export const createProduct = createAsyncThunk(
     } catch (error) {
       console.error("Create product error:", error);
       return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Create product failed"
+        error.response?.data?.message ??
+        error.response?.data?.error ??
+        "Create product failed"
       );
     }
   }

@@ -9,6 +9,14 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ error: "Name, Category and Price are required fields." });
     }
 
+    // 🔥 Check itemNumber uniqueness
+    const existingProduct = await Product.findOne({ itemNumber });
+    if (existingProduct) {
+      return res.status(409).json({
+        error: "Item Number already exists. Please use a unique item number."
+      });
+    }
+
     const slug = generateSlug(name);
 
     const newProduct = new Product({
@@ -40,6 +48,18 @@ export const createProduct = async (req, res) => {
     res.json({ success: true, product: populatedProduct });
     console.log("Product created:", populatedProduct);
   } catch (err) {
+     // 🔥 Handle MongoDB duplicate key error (safety net)
+    if (err.code === 11000 && err.keyPattern?.itemNumber) {
+      return res.status(409).json({
+        error: "Item Number already exists."
+      });
+    }
+
+    if (err.code === 11000 && err.keyPattern?.slug) {
+      return res.status(409).json({
+        error: "Product with this name already exists."
+      });
+    }
     console.log(err);
     res.status(500).json({ error: err.message });
   }

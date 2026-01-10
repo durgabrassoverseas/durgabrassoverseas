@@ -778,8 +778,14 @@ const CreateProductModal = ({ onClose }) => {
       onClose();
       dispatch(fetchProducts());
     } catch (err) {
-      toast.error(err.message || "Failed to create product.");
-    } finally {
+  const message =
+    typeof err === "string"
+      ? err
+      : err?.message || "Failed to create product.";
+
+  toast.error(message);
+}
+     finally {
       setIsCreating(false);
     }
   };
