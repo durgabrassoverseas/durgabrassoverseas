@@ -3,64 +3,59 @@ import { generateSlug } from "../utils/helperFunctions.js";
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, itemNumber, imageURL, description, category, itemSize, masterPack, cartonSize, weight, finish, otherMaterial, price, discountPercent } = req.body;
+    const {
+      name,
+      itemNumber,
+      imageURL,
+      description,
+      category,
+      itemSize,
+      masterPack,
+      cartonSize,
+      weight,
+      finish,
+      otherMaterial,
+      price,
+      discountPercent,
+    } = req.body;
 
-    if(!name || !category || !price) {
-      return res.status(400).json({ error: "Name, Category and Price are required fields." });
+    if (!name || !category || !price || !itemNumber) {
+      return res
+        .status(400)
+        .json({ error: "Name, Item Number, Category and Price are required." });
     }
 
-    // 🔥 Check itemNumber uniqueness
-    const existingProduct = await Product.findOne({ itemNumber });
-    if (existingProduct) {
-      return res.status(409).json({
-        error: "Item Number already exists. Please use a unique item number."
-      });
-    }
-
-    const slug = generateSlug(name);
+    const slug = generateSlug(name, itemNumber);
 
     const newProduct = new Product({
-        name,
-        itemNumber,
-        slug,
-        imageURL,
-        description,
-        category,
-        itemSize,
-        masterPack,
-        cartonSize,
-        weight,
-        finish,
-        otherMaterial,
-        price,
-        discountPercent,
+      name,
+      itemNumber,
+      slug,
+      imageURL,
+      description,
+      category,
+      itemSize,
+      masterPack,
+      cartonSize,
+      weight,
+      finish,
+      otherMaterial,
+      price,
+      discountPercent,
     });
-
-    // populate category and finish before sending response
 
     await newProduct.save();
 
     // 🔥 Populate category & finish for Redux
-    const populatedProduct = await Product.findById(newProduct._id)
-      .populate("category", "name")   // or { path: "category", select: "name" }
-      // .populate("finish", "name");    // same here if finish is a ref
+    const populatedProduct = await Product.findById(newProduct._id).populate(
+      "category",
+      "name"
+    ); // or { path: "category", select: "name" }
+    // .populate("finish", "name");    // same here if finish is a ref
 
     res.json({ success: true, product: populatedProduct });
     console.log("Product created:", populatedProduct);
   } catch (err) {
-     // 🔥 Handle MongoDB duplicate key error (safety net)
-    if (err.code === 11000 && err.keyPattern?.itemNumber) {
-      return res.status(409).json({
-        error: "Item Number already exists."
-      });
-    }
-
-    if (err.code === 11000 && err.keyPattern?.slug) {
-      return res.status(409).json({
-        error: "Product with this name already exists."
-      });
-    }
-    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -139,7 +134,9 @@ export const deleteProduct = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   try {
     const { categoryId } = req.params;
-    const products = await Product.find({ category: categoryId }).populate("category");
+    const products = await Product.find({ category: categoryId }).populate(
+      "category"
+    );
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -159,17 +156,16 @@ export const getProductByItemNumber = async (req, res) => {
   }
 };
 
-
 export const getProducts = async (req, res) => {
   console.log("Search products called with query:", req.query);
 
   try {
     const {
       search = "",
-      sort = "desc",   // asc | desc
+      sort = "desc", // asc | desc
       page = 1,
       limit = 100,
-      category,        // categoryId OR "all"
+      category, // categoryId OR "all"
     } = req.query;
 
     const filter = {};
@@ -195,7 +191,7 @@ export const getProducts = async (req, res) => {
 
     const sortDirection = sort === "asc" ? 1 : -1;
 
-     const products = await Product.aggregate([
+    const products = await Product.aggregate([
       { $match: filter },
 
       // 🔑 Custom sort fields
@@ -218,9 +214,9 @@ export const getProducts = async (req, res) => {
         },
       },
 
-       {
+      {
         $lookup: {
-          from: "categories",          // collection name (IMPORTANT)
+          from: "categories", // collection name (IMPORTANT)
           localField: "category",
           foreignField: "_id",
           as: "category",

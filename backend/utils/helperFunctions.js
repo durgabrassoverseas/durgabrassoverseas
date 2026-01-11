@@ -1,8 +1,15 @@
 import slugify from "slugify";
 import QRCode from "qrcode";
 
-export const generateSlug = (name) =>
-  slugify(name, { lower: true, strict: true });
+export const generateSlug = (name, itemNumber) => {
+  return slugify(`${name}-${itemNumber}`, {
+    lower: true,
+    strict: true,
+  });
+};
+
+// export const generateSlug = (name) =>
+//   slugify(name, { lower: true, strict: true });
 
 export const generateProductSKU = () =>
   "PRO-" + Math.random().toString(36).substring(2, 8).toUpperCase();

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  itemNumber: { type: String, unique: true, required: true, index: true, trim: true },
+  itemNumber: { type: String, required: true, trim: true },
   slug: { type: String, unique: true },
   // productSKU: { type: String, unique: true }, // SKU for the model, not the piece
   imageURL:{ type: String },
