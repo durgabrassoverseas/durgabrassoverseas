@@ -740,6 +740,16 @@ const CreateProductModal = ({ onClose }) => {
     }));
   };
 
+  const calculateDiscountedPrice = () => {
+  const price = Number(formData.price);
+  const discount = Number(formData.discount);
+
+  if (!price || !discount) return price || 0;
+
+  return (price - (price * discount) / 100).toFixed(2);
+};
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.category) {
@@ -813,247 +823,134 @@ const CreateProductModal = ({ onClose }) => {
         </div>
 
         {/* BODY (Form) */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+       <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
+  <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-4 items-end">
+    
+    {/* Image Section - Unchanged as requested */}
+    <div className="md:col-span-12 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 hover:border-indigo-300 transition-colors">
+      {imagePreview ? (
+        <div className="relative w-32 h-32 mb-2">
+          <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg shadow-md" />
+          <button
+            type="button"
+            onClick={() => { setImageFile(null); setImagePreview(null); }}
+            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      ) : (
+        <label className="flex flex-col items-center gap-2 cursor-pointer text-gray-500 hover:text-indigo-600">
+          <PlusCircle className="w-10 h-10" />
+          <span className="text-sm font-medium">Add Product Image</span>
+          <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
+        </label>
+      )}
+    </div>
 
-            <div className="md:col-span-2 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 hover:border-indigo-300 transition-colors">
-              {imagePreview ? (
-                <div className="relative w-32 h-32 mb-2">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg shadow-md" />
-                  <button
-                    type="button"
-                    onClick={() => { setImageFile(null); setImagePreview(null); }}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center gap-2 cursor-pointer text-gray-500 hover:text-indigo-600">
-                  <PlusCircle className="w-10 h-10" />
-                  <span className="text-sm font-medium">Add Product Image</span>
-                  <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
-                </label>
-              )}
-            </div>
+    {/* ROW 1: Item Number#, Product Name, Category */}
+    <div className="md:col-span-2">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Item Number#</label>
+      <input name="itemNo" type="text" value={formData.itemNo} onChange={handleChange} className={inputClasses} placeholder="#" />
+    </div>
+    <div className="md:col-span-7">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name <span className="text-red-500">*</span></label>
+      <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} required className={inputClasses} />
+    </div>
+    <div className="md:col-span-3">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Category <span className="text-red-500">*</span></label>
+      <select id="category" name="category" value={formData.category} onChange={handleChange} required className={inputClasses}>
+        {categories.map((cat) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+      </select>
+    </div>
 
-            {/* Essential Fields */}
-            <div className="md:col-span-2 p-3 bg-indigo-50/50 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-semibold text-gray-700 mb-1"
-                >
-                  Product Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className={inputClasses}
-                  disabled={isCreating}
-                />
-              </div>
+    {/* ROW 2: Item Dimensions & Finish (Aligned Heights) */}
+    <div className="md:col-span-5">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Item Dimensions (L×W×H)</label>
+      <div className="flex gap-1">
+        {["length", "width", "height"].map((key) => (
+          <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.itemSize[key]} onChange={(e) => handleSizeChange(e, "itemSize")} className={sizeInputClasses} />
+        ))}
+      </div>
+    </div>
+    <div className="md:col-span-7">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Finish</label>
+      <input name="finish" type="text" placeholder="Finish type" value={formData.finish} onChange={handleChange} className={inputClasses} />
+    </div>
 
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-semibold text-gray-700 mb-1"
-                >
-                  Category <span className="text-red-500">*</span>
-                </label>
-                <select
-                  id="category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                  className={inputClasses}
-                  disabled={isCreating || categories.length === 0}
-                >
-                  {categories.length === 0 && (
-                    <option value="" disabled>
-                      No categories available
-                    </option>
-                  )}
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+    {/* ROW 3: Weight, Price, Discount, Discounted Price */}
+    <div className="md:col-span-2">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Weight</label>
+      <input name="weight" type="text" value={formData.weight} onChange={handleChange} className={inputClasses} />
+    </div>
+    <div className="md:col-span-3">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Price</label>
+      <input name="price" type="number" value={formData.price} onChange={handleChange} className={inputClasses} />
+    </div>
+    <div className="md:col-span-3">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Discount</label>
+      <input name="discount" type="number" value={formData.discount} onChange={handleChange} className={inputClasses} />
+    </div>
+    <div className="md:col-span-4">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Discounted Price</label>
+      <input name="discountedPrice" type="number" value={calculateDiscountedPrice()} readOnly className={`${inputClasses} bg-gray-50 font-bold text-indigo-700`} />
+    </div>
 
-            <div>
-  <label className="block text-sm font-semibold text-gray-700 mb-1">
-    Finish
-  </label>
-  <input
-    name="finish"
-    type="text"
-    placeholder="e.g. Matte, Polished, Chrome"
-    value={formData.finish}
-    onChange={handleChange}
-    className={inputClasses}
-  />
-</div>
+    {/* ROW 4: Other Materials (Full Width) */}
+    <div className="md:col-span-12">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Other Materials</label>
+      <div className="flex gap-2">
+        <div className="flex-1 flex flex-wrap gap-2 p-2 border rounded-lg min-h-[42px] bg-white">
+            {formData.otherMaterial.map((material, index) => (
+            <span key={index} className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium border border-indigo-100">
+                {material} <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => removeMaterial(index)} />
+            </span>
+            ))}
+            <input 
+                type="text" 
+                value={materialInput} 
+                onChange={(e) => setMaterialInput(e.target.value)} 
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addMaterial())} 
+                placeholder="Type and press Enter..." 
+                className="flex-1 outline-none text-sm min-w-[120px]" 
+            />
+        </div>
+        <button type="button" onClick={addMaterial} className="px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors self-stretch">
+            <PlusCircle size={20} />
+        </button>
+      </div>
+    </div>
 
-            {/* Description */}
-            <div className="md:col-span-2">
-              <label
-                htmlFor="description"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                className={`${inputClasses} min-h-20`}
-                disabled={isCreating}
-              />
-            </div>
+    {/* ROW 5: Description (Full Width) */}
+    <div className="md:col-span-12">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+      <textarea id="description" name="description" value={formData.description} onChange={handleChange} className={`${inputClasses} min-h-20`} />
+    </div>
 
-            {/* Specifications */}
-            <div className="md:col-span-2 grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2 border-t border-gray-100">
-              <div className="col-span-2 lg:col-span-4 text-sm font-bold text-gray-600 border-b pb-2">
-                SPECIFICATIONS
-              </div>
-              {PRODUCT_FIELDS.filter(
-                (f) => !["name", "description", "category"].includes(f.field)
-              ).map(({ label, field, type }) => (
-                <div key={field} className="col-span-1">
-                  <label
-                    htmlFor={field}
-                    className="block text-xs font-semibold uppercase text-gray-600 mb-1"
-                  >
-                    {label}
-                  </label>
-                  <input
-                    id={field}
-                    name={field}
-                    type={type || "text"}
-                    value={formData[field]}
-                    onChange={handleChange}
-                    className={inputClasses}
-                    disabled={isCreating}
-                  />
-                </div>
-              ))}
-            </div>
+    {/* ROW 6: Master Pack & Carton Size (Aligned Heights) */}
+    <div className="md:col-span-3">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Master Pack</label>
+      <input name="masterPack" type="text" value={formData.masterPack} onChange={handleChange} className={inputClasses} />
+    </div>
+    <div className="md:col-span-9">
+      <label className="block text-sm font-semibold text-gray-700 mb-1">Carton Size (L×W×H)</label>
+      <div className="flex gap-2">
+        {["length", "width", "height"].map((key) => (
+          <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.cartonSize[key]} onChange={(e) => handleSizeChange(e, "cartonSize")} className={sizeInputClasses} />
+        ))}
+      </div>
+    </div>
 
-            {/* OTHER MATERIALS (NEW) */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Other Materials
-              </label>
-              
-              {/* Display existing materials */}
-              <div className="flex flex-wrap gap-2 mb-2">
-                {formData.otherMaterial.map((material, index) => (
-                  <span
-                    key={index}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-sm"
-                  >
-                    {material}
-                    <X
-                      size={14}
-                      className="cursor-pointer hover:text-red-600"
-                      onClick={() => removeMaterial(index)}
-                    />
-                  </span>
-                ))}
-              </div>
+  </div>
 
-              {/* Add new material */}
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={materialInput}
-                  onChange={(e) => setMaterialInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addMaterial();
-                    }
-                  }}
-                  placeholder="Enter material and press Enter or +"
-                  className={inputClasses}
-                  disabled={isCreating}
-                />
-                <button
-                  type="button"
-                  onClick={addMaterial}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
-                  disabled={isCreating || !materialInput.trim()}
-                >
-                  <PlusCircle className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Size Fields */}
-            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-100">
-              <div className="space-y-2 p-3 border rounded-lg bg-gray-50/50">
-                <label className="text-sm font-semibold text-gray-700 block">
-                  Item Dimensions (L × W × H in inches)
-                </label>
-                <div className="flex gap-2">
-                  {["length", "width", "height"].map((key) => (
-                    <input
-                      key={`itemSize-${key}`}
-                      name={key}
-                      type="number"
-                      placeholder={key[0].toUpperCase()}
-                      value={formData.itemSize[key]}
-                      onChange={(e) => handleSizeChange(e, "itemSize")}
-                      className={sizeInputClasses}
-                      disabled={isCreating}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2 p-3 border rounded-lg bg-gray-50/50">
-                <label className="text-sm font-semibold text-gray-700 block">
-                  Carton Dimensions (L × W × H in inches)
-                </label>
-                <div className="flex gap-2">
-                  {["length", "width", "height"].map((key) => (
-                    <input
-                      key={`cartonSize-${key}`}
-                      name={key}
-                      type="number"
-                      placeholder={key[0].toUpperCase()}
-                      value={formData.cartonSize[key]}
-                      onChange={(e) => handleSizeChange(e, "cartonSize")}
-                      className={sizeInputClasses}
-                      disabled={isCreating}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* FOOTER */}
-          <div className="pt-6 border-t mt-6 text-right">
-            <button
-              type="submit"
-              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50 shadow-lg transform hover:-translate-y-0.5"
-              disabled={isCreating || !formData.name.trim() || !formData.category}
-            >
-              {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlusCircle className="w-5 h-5" />}
-              {isCreating ? "Uploading & Creating..." : "Create Product Template"}
-            </button>
-          </div>
-        </form>
+  {/* FOOTER */}
+  <div className="pt-6 border-t mt-6 flex justify-end">
+    <button type="submit" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg active:scale-95 transition-all" disabled={isCreating}>
+      {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlusCircle className="w-5 h-5" />}
+      {isCreating ? "Saving..." : "Create Product Template"}
+    </button>
+  </div>
+</form>
       </div>
     </div>
   );
@@ -1093,15 +990,18 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
               </th>
               <th className="px-3 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Product</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Category</th>
+              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Item Size (L×W×H)</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Finish</th>
+              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Wt</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Price</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis%</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis. Price</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Size (L×W×H)</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Wt</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Material</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Ctn Size</th>
+              
+              
+              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Oth. Material</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">M.Pack</th>
+              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Ctn Size</th>
+              
               <th className="px-2 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
             </tr>
           </thead>
@@ -1137,6 +1037,9 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     {product.category?.name || "—"}
                   </span>
                 </td>
+                <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
+                  {formatSize(product.itemSize)}
+                </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
   <span 
     className="block max-w-[150px] truncate" 
@@ -1145,6 +1048,9 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
     {product.finish || "—"}
   </span>
 </td>
+ <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
+                  {product.weight ? `${product.weight}kg` : "—"}
+                </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm font-bold text-gray-800">
                   {formatCurrency(product.price)}
                 </td>
@@ -1156,12 +1062,8 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     ? formatCurrency(product.price * (1 - product.discountPercent / 100))
                     : "—"}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
-                  {formatSize(product.itemSize)}
-                </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
-                  {product.weight ? `${product.weight}kg` : "—"}
-                </td>
+                
+               
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
                   <div className="flex flex-wrap gap-1">
                     {product.otherMaterial && Array.isArray(product.otherMaterial) && product.otherMaterial.length > 0 ? (
@@ -1179,12 +1081,13 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     )}
                   </div>
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
-                  {formatSize(product.cartonSize)}
-                </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-center text-gray-600">
                   {product.masterPack || "—"}
                 </td>
+                <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
+                  {formatSize(product.cartonSize)}
+                </td>
+                
                 <td className="px-2 py-2 whitespace-nowrap text-center">
                   <div className="flex items-center justify-center gap-1">
                     <button
