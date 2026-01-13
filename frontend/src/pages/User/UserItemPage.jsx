@@ -147,7 +147,7 @@ const UserItemPage = () => {
                             <img
                                 src={product.imageURL}
                                 alt={product.name}
-                                className="w-full h-full object-cover md:object-fit"
+                                className="w-full h-full object-contain md:object-fit"
                             />
                         </div>
                     </div>
