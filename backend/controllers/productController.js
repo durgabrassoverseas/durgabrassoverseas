@@ -184,54 +184,54 @@ export const getProducts = async (req, res) => {
       filter.category = category;
     }
     // 🔢 SORT
-    // const products = await Product.find(filter).populate("category")
-    //   .sort({ itemNumber: sort === "asc" ? 1 : -1 })
-    //   .skip((page - 1) * limit)
-    //   .limit(Number(limit));
+    const products = await Product.find(filter).populate("category")
+      .sort({ itemNumber: sort === "asc" ? 1 : -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
 
-    const sortDirection = sort === "asc" ? 1 : -1;
+    // const sortDirection = sort === "asc" ? 1 : -1;
 
-    const products = await Product.aggregate([
-      { $match: filter },
+    // const products = await Product.aggregate([
+    //   { $match: filter },
 
-      // 🔑 Custom sort fields
-      {
-        $addFields: {
-          isAlpha: {
-            $regexMatch: {
-              input: "$itemNumber",
-              regex: /^[A-Za-z]/, // starts with letter
-            },
-          },
-        },
-      },
+    //   // 🔑 Custom sort fields
+    //   {
+    //     $addFields: {
+    //       isAlpha: {
+    //         $regexMatch: {
+    //           input: "$itemNumber",
+    //           regex: /^[A-Za-z]/, // starts with letter
+    //         },
+    //       },
+    //     },
+    //   },
 
-      {
-        $sort: {
-          // ASC: alpha first, DESC: numeric first
-          isAlpha: sort === "asc" ? -1 : 1,
-          itemNumber: sortDirection,
-        },
-      },
+    //   {
+    //     $sort: {
+    //       // ASC: alpha first, DESC: numeric first
+    //       isAlpha: sort === "asc" ? -1 : 1,
+    //       itemNumber: sortDirection,
+    //     },
+    //   },
 
-      {
-        $lookup: {
-          from: "categories", // collection name (IMPORTANT)
-          localField: "category",
-          foreignField: "_id",
-          as: "category",
-        },
-      },
-      {
-        $unwind: {
-          path: "$category",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
+    //   {
+    //     $lookup: {
+    //       from: "categories", // collection name (IMPORTANT)
+    //       localField: "category",
+    //       foreignField: "_id",
+    //       as: "category",
+    //     },
+    //   },
+    //   {
+    //     $unwind: {
+    //       path: "$category",
+    //       preserveNullAndEmptyArrays: true,
+    //     },
+    //   },
 
-      { $skip: (page - 1) * limit },
-      { $limit: Number(limit) },
-    ]);
+    //   { $skip: (page - 1) * limit },
+    //   { $limit: Number(limit) },
+    // ]);
 
     const total = await Product.countDocuments(filter);
 
@@ -244,6 +244,7 @@ export const getProducts = async (req, res) => {
       sortBy: "itemNumber",
       sortOrder: sort,
     });
+    console.log("Products fetched:", products);
   } catch (err) {
     console.error("Search products error:", err);
     res.status(500).json({ error: err.message });
