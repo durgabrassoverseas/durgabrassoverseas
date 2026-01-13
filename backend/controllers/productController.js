@@ -19,10 +19,10 @@ export const createProduct = async (req, res) => {
       discountPercent,
     } = req.body;
 
-    if (!name || !category || !price || !itemNumber) {
+    if (!name || !category || !itemNumber) {
       return res
         .status(400)
-        .json({ error: "Name, Item Number, Category and Price are required." });
+        .json({ error: "Name, Item Number, and Category are required." });
     }
 
     const slug = generateSlug(name, itemNumber);
