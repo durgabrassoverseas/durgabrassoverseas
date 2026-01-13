@@ -41,7 +41,7 @@ const LoginPage = () => {
                 }
             );
 
-            if (res.user.role === 'admin') {
+            if (res.user.role === 'admin' || res.user.role === 'staff') {
                 navigate('/admin/dashboard');
             } else {
                 navigate('/');

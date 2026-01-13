@@ -58,3 +58,23 @@ export const isAdmin = async (req, res, next) => {
     res.status(500).json({ error: "Authorization check failed" });
   }
 };
+
+export const isAdminOrStaff = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    if (req.user.role !== "admin" && req.user.role !== "staff") {
+      console.log("Access denied. User role:", req.user.role);
+      return res.status(403).json({
+        error: "Forbidden - Admin or Staff access required",
+        message: "User not authorized to access this resource",
+      });
+    }
+
+    next();
+  } catch (err) {
+    res.status(500).json({ error: "Authorization check failed" });
+  }
+};

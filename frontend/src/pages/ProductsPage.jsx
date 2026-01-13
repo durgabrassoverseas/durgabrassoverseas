@@ -1133,6 +1133,9 @@ const ProductsPage = () => {
   const { products, categories, pagination, loading } = useSelector(
     (state) => state.admin
   );
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+    // console.log("Current User Role", user?.role);
   const [currentPage, setCurrentPage] = useState(1);
 
   console.log(products);
@@ -1248,6 +1251,7 @@ const ProductsPage = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
+            {user?.role === "admin" && (
             <button
               onClick={handleExportExcel}
               className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
@@ -1255,6 +1259,7 @@ const ProductsPage = () => {
               <Download className="w-4 h-4 shrink-0" />
               <span className="truncate">Excel</span>
             </button>
+            )}
 
             <button
               onClick={handleDownloadAllQRZips}
