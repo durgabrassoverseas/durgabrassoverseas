@@ -460,6 +460,97 @@ const EditableFinish = ({ product }) => {
   );
 };
 
+
+const EditableSizeField = ({ value, field, productId }) => {
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
+
+  const [editing, setEditing] = useState(false);
+  const [localSize, setLocalSize] = useState({
+    length: value?.length ?? "",
+    width: value?.width ?? "",
+    height: value?.height ?? "",
+  });
+
+  useEffect(() => {
+    if (!editing) {
+      setLocalSize({
+        length: value?.length ?? "",
+        width: value?.width ?? "",
+        height: value?.height ?? "",
+      });
+    }
+  }, [value, editing]);
+
+  const save = () => {
+    // Check if anything actually changed
+    if (
+      Number(localSize.length) === value?.length &&
+      Number(localSize.width) === value?.width &&
+      Number(localSize.height) === value?.height
+    ) {
+      setEditing(false);
+      return;
+    }
+
+    const finalValue = {
+      length: localSize.length !== "" ? Number(localSize.length) : 0,
+      width: localSize.width !== "" ? Number(localSize.width) : 0,
+      height: localSize.height !== "" ? Number(localSize.height) : 0,
+    };
+
+    dispatch(
+      updateProduct({
+        productId,
+        field,
+        value: finalValue,
+        token,
+      })
+    )
+      .unwrap()
+      .then(() => toast.success(`${field} updated`))
+      .catch((err) => toast.error(err.message || "Update failed"));
+
+    setEditing(false);
+  };
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-1">
+        <div className="flex gap-1">
+          {["length", "width", "height"].map((dim) => (
+            <input
+              key={dim}
+              type="number"
+              placeholder={dim[0].toUpperCase()}
+              value={localSize[dim]}
+              onChange={(e) => setLocalSize({ ...localSize, [dim]: e.target.value })}
+              className="w-16 border border-indigo-300 px-1 py-1 rounded text-sm focus:ring-1 focus:ring-indigo-500 outline-none"
+            />
+          ))}
+        </div>
+        <div className="flex gap-1 shrink-0 ml-1">
+          <Check size={16} className="cursor-pointer text-green-600" onClick={save} />
+          <X size={16} className="cursor-pointer text-red-500" onClick={() => setEditing(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-between group">
+      <span className="text-sm font-medium text-gray-700">
+        {formatSize(value)}
+      </span>
+      <Pencil
+        size={14}
+        className="cursor-pointer text-gray-400 hover:text-indigo-600 transition"
+        onClick={() => setEditing(true)}
+      />
+    </div>
+  );
+};
+
 const EditableImage = ({ productId, currentImage }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
@@ -636,26 +727,32 @@ const ProductModal = ({ product, onClose }) => {
               />
             </div>
 
-            {/* SIZE INFO */}
-            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
-              <div className="p-3 border rounded-lg bg-white shadow-sm">
-                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-                  <Box className="w-3 h-3" /> Item Dimensions (")
-                </label>
-                <span className="text-sm font-medium text-gray-700">
-                  {formatSize(product.itemSize)}
-                </span>
-              </div>
+           {/* SIZE INFO */}
+<div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
+  <div className="p-3 border rounded-lg bg-white shadow-sm">
+    <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+      <Box className="w-3 h-3" /> Item Dimensions (")
+    </label>
+    {/* REPLACED STATIC SPAN WITH EDITABLE COMPONENT */}
+    <EditableSizeField 
+      value={product.itemSize} 
+      field="itemSize" 
+      productId={product._id} 
+    />
+  </div>
 
-              <div className="p-3 border rounded-lg bg-white shadow-sm">
-                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-                  <Box className="w-3 h-3" /> Carton Dimensions (")
-                </label>
-                <span className="text-sm font-medium text-gray-700">
-                  {formatSize(product.cartonSize)}
-                </span>
-              </div>
-            </div>
+  <div className="p-3 border rounded-lg bg-white shadow-sm">
+    <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+      <Box className="w-3 h-3" /> Carton Dimensions (")
+    </label>
+    {/* REPLACED STATIC SPAN WITH EDITABLE COMPONENT */}
+    <EditableSizeField 
+      value={product.cartonSize} 
+      field="cartonSize" 
+      productId={product._id} 
+    />
+  </div>
+</div>
           </div>
         </div>
 
@@ -963,7 +1060,7 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full divide-y divide-gray-200">
+        <table className="w-full divide-y divide-gray-400">
           <thead className="bg-linear-to-r from-indigo-50 to-purple-50">
             <tr>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Img</th>
@@ -1005,7 +1102,7 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
               <th className="px-2 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-gray-400 bg-white">
             {products.map((product) => (
               <tr key={product._id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="px-2 py-2 whitespace-nowrap">

@@ -11,8 +11,10 @@ import {
     Info,
     Grid,
     Loader,
-    Zap,
-    Ruler
+    FileText,
+    Ruler,
+    Tag,
+ Sparkles
 } from "lucide-react";
 import demoImg from "../../assets/demoImg.png";
 
@@ -67,10 +69,23 @@ const UserItemPage = () => {
         }
     }, [dispatch, itemNumber]);
 
-    const itemSize = useMemo(() =>
-        product?.itemSize ? `${product.itemSize.length}" × ${product.itemSize.width}" × ${product.itemSize.height}"` : 'N/A',
-        [product?.itemSize]
-    );
+    // const itemSize = useMemo(() =>
+    //     product?.itemSize ? `${product.itemSize.length}" × ${product.itemSize.width}" × ${product.itemSize.height}"` : 'N/A',
+    //     [product?.itemSize]
+    // );
+
+    const itemSize = useMemo(() => {
+  if (!product?.itemSize) return "N/A";
+
+  const dimensions = [
+    product.itemSize.length && `${product.itemSize.length}"`,
+    product.itemSize.width && `${product.itemSize.width}"`,
+    product.itemSize.height && `${product.itemSize.height}"`,
+  ].filter(Boolean);
+
+  return dimensions.length ? dimensions.join(" × ") : "N/A";
+}, [product?.itemSize]);
+
 
     const cartonSize = useMemo(() =>
         product?.cartonSize ? `${product.cartonSize.length}" × ${product.cartonSize.width}" × ${product.cartonSize.height}"` : 'N/A',
@@ -127,13 +142,13 @@ const UserItemPage = () => {
                                 {product.name}
                             </h1>
                             
-                            <p className="text-sm text-gray-500 flex items-center gap-1 font-mono mb-0.5">
-                                <Zap className="w-3.5 h-3.5 md:w-4 md:h-4 text-indigo-400 shrink-0" />
-                                <span className="font-semibold">Item:</span> 
-                                <span className="truncate">{product.itemNumber}</span>
+                            <p className="text-xl text-black flex items-center gap-1 font-mono mb-0.5">
+                                <Tag className="w-3.5 h-3.5 md:w-4 md:h-4 text-indigo-400 shrink-0" />
+                                <span className="font text-gray-500">Item #:</span> 
+                                <span className="font-semibold truncate">{product.itemNumber}</span>
                             </p>
 
-                            <p className="text-sm text-gray-500 flex items-center gap-1">
+                            <p className="text-md text-gray-500 flex items-center gap-1">
                                 <Grid className="w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400 shrink-0" />
                                 <span className="truncate">{product.category?.name || 'Uncategorized'}</span>
                             </p>
@@ -153,18 +168,23 @@ const UserItemPage = () => {
                     </div>
 
                     {/* DESCRIPTION - Responsive truncation */}
-                    <div>
-                        <h2 className="text-base md:text-lg font-semibold text-gray-800 mb-1 md:mb-2">Description</h2>
-                        <p className="text-sm md:text-base text-gray-700 leading-relaxed line-clamp-3 md:line-clamp-none">
-                            {product.description || "No detailed overview provided."}
-                        </p>
-                    </div>
+<div>
+  <h2 className="flex items-center gap-1.5 text-base md:text-lg font-semibold text-gray-800 mb-1 md:mb-2">
+    <FileText className="w-4 h-4 md:w-5 md:h-5 text-gray-500 shrink-0" />
+    <span>Description</span>
+  </h2>
+
+  <p className="text-sm md:text-base text-gray-700 leading-relaxed line-clamp-3 md:line-clamp-none">
+    {product.description || "No detailed overview provided."}
+  </p>
+</div>
+
 
                     {/* SPECIFICATIONS - Responsive grid */}
                     <div>
                         <h2 className="text-base md:text-lg font-semibold text-gray-800 mb-2 md:mb-4">Specifications</h2>
                         <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
-                            <Spec label="Finish" value={product.finish} IconComponent={Info} />
+                            <Spec label="Finish" value={product.finish} IconComponent={Sparkles} />
                             <Spec label="Weight" value={`${product.weight} kg`} IconComponent={Weight} />
                             <Spec label="Item Size" value={itemSize} IconComponent={Ruler} />
                             <Spec label="Pack Qty" value={product.masterPack} IconComponent={Layers} />

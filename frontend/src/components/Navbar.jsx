@@ -39,7 +39,7 @@ const Navbar = () => {
     className="w-12 h-12 object-fit rounded-full mr-1"
   />
             <span className="text-lg font-extrabold tracking-wider text-white">
-              DURGA BRASS <span className="text-indigo-400">OVERSEAS</span>
+              DURGA BRASS OVERSEAS
             </span>
           </div>
 
