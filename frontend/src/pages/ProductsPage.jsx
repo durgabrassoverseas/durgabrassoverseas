@@ -176,7 +176,7 @@ EDITABLE OTHER MATERIALS (NEW - ARRAY SUPPORT)
 const EditableOtherMaterials = ({ productId, materials = [] }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
-  
+
   const [editing, setEditing] = useState(false);
   const [localMaterials, setLocalMaterials] = useState(Array.isArray(materials) ? materials : []);
   const [newMaterial, setNewMaterial] = useState("");
@@ -199,7 +199,7 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
 
   const save = () => {
     const cleanedMaterials = localMaterials.filter(m => m.trim() !== "");
-    
+
     dispatch(
       updateProduct({
         productId,
@@ -721,38 +721,38 @@ const ProductModal = ({ product, onClose }) => {
               <label className="text-xs font-semibold uppercase text-gray-500 block">
                 Other Materials
               </label>
-              <EditableOtherMaterials 
+              <EditableOtherMaterials
                 productId={product._id}
                 materials={product.otherMaterial || []}
               />
             </div>
 
-           {/* SIZE INFO */}
-<div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
-  <div className="p-3 border rounded-lg bg-white shadow-sm">
-    <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-      <Box className="w-3 h-3" /> Item Dimensions (")
-    </label>
-    {/* REPLACED STATIC SPAN WITH EDITABLE COMPONENT */}
-    <EditableSizeField 
-      value={product.itemSize} 
-      field="itemSize" 
-      productId={product._id} 
-    />
-  </div>
+            {/* SIZE INFO */}
+            <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
+              <div className="p-3 border rounded-lg bg-white shadow-sm">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+                  <Box className="w-3 h-3" /> Item Dimensions (")
+                </label>
+                {/* REPLACED STATIC SPAN WITH EDITABLE COMPONENT */}
+                <EditableSizeField
+                  value={product.itemSize}
+                  field="itemSize"
+                  productId={product._id}
+                />
+              </div>
 
-  <div className="p-3 border rounded-lg bg-white shadow-sm">
-    <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-      <Box className="w-3 h-3" /> Carton Dimensions (")
-    </label>
-    {/* REPLACED STATIC SPAN WITH EDITABLE COMPONENT */}
-    <EditableSizeField 
-      value={product.cartonSize} 
-      field="cartonSize" 
-      productId={product._id} 
-    />
-  </div>
-</div>
+              <div className="p-3 border rounded-lg bg-white shadow-sm">
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+                  <Box className="w-3 h-3" /> Carton Dimensions (")
+                </label>
+                {/* REPLACED STATIC SPAN WITH EDITABLE COMPONENT */}
+                <EditableSizeField
+                  value={product.cartonSize}
+                  field="cartonSize"
+                  productId={product._id}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -838,13 +838,13 @@ const CreateProductModal = ({ onClose }) => {
   };
 
   const calculateDiscountedPrice = () => {
-  const price = Number(formData.price);
-  const discount = Number(formData.discount);
+    const price = Number(formData.price);
+    const discount = Number(formData.discount);
 
-  if (!price || !discount) return price || 0;
+    if (!price || !discount) return price || 0;
 
-  return (price - (price * discount) / 100).toFixed(2);
-};
+    return (price - (price * discount) / 100).toFixed(2);
+  };
 
 
   const handleSubmit = async (e) => {
@@ -885,14 +885,14 @@ const CreateProductModal = ({ onClose }) => {
       onClose();
       dispatch(fetchProducts());
     } catch (err) {
-  const message =
-    typeof err === "string"
-      ? err
-      : err?.message || "Failed to create product.";
+      const message =
+        typeof err === "string"
+          ? err
+          : err?.message || "Failed to create product.";
 
-  toast.error(message);
-}
-     finally {
+      toast.error(message);
+    }
+    finally {
       setIsCreating(false);
     }
   };
@@ -920,134 +920,134 @@ const CreateProductModal = ({ onClose }) => {
         </div>
 
         {/* BODY (Form) */}
-       <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
-  <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-4 items-end">
-    
-    {/* Image Section - Unchanged as requested */}
-    <div className="md:col-span-12 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 hover:border-indigo-300 transition-colors">
-      {imagePreview ? (
-        <div className="relative w-32 h-32 mb-2">
-          <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg shadow-md" />
-          <button
-            type="button"
-            onClick={() => { setImageFile(null); setImagePreview(null); }}
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
-          >
-            <X size={14} />
-          </button>
-        </div>
-      ) : (
-        <label className="flex flex-col items-center gap-2 cursor-pointer text-gray-500 hover:text-indigo-600">
-          <PlusCircle className="w-10 h-10" />
-          <span className="text-sm font-medium">Add Product Image</span>
-          <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
-        </label>
-      )}
-    </div>
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-4 items-end">
 
-    {/* ROW 1: Item Number#, Product Name, Category */}
-    <div className="md:col-span-2">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Item Number#</label>
-      <input name="itemNumber" type="text" value={formData.itemNumber} onChange={handleChange} className={inputClasses} placeholder="#" />
-    </div>
-    <div className="md:col-span-7">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name <span className="text-red-500">*</span></label>
-      <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} required className={inputClasses} />
-    </div>
-    <div className="md:col-span-3">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Category <span className="text-red-500">*</span></label>
-      <select id="category" name="category" value={formData.category} onChange={handleChange} required className={inputClasses}>
-        {categories.map((cat) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
-      </select>
-    </div>
+            {/* Image Section - Unchanged as requested */}
+            <div className="md:col-span-12 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 hover:border-indigo-300 transition-colors">
+              {imagePreview ? (
+                <div className="relative w-32 h-32 mb-2">
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg shadow-md" />
+                  <button
+                    type="button"
+                    onClick={() => { setImageFile(null); setImagePreview(null); }}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center gap-2 cursor-pointer text-gray-500 hover:text-indigo-600">
+                  <PlusCircle className="w-10 h-10" />
+                  <span className="text-sm font-medium">Add Product Image</span>
+                  <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
+                </label>
+              )}
+            </div>
 
-    {/* ROW 2: Item Dimensions & Finish (Aligned Heights) */}
-    <div className="md:col-span-5">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Item Dimensions (L×W×H)</label>
-      <div className="flex gap-1">
-        {["length", "width", "height"].map((key) => (
-          <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.itemSize[key]} onChange={(e) => handleSizeChange(e, "itemSize")} className={sizeInputClasses} />
-        ))}
-      </div>
-    </div>
-    <div className="md:col-span-7">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Finish</label>
-      <input name="finish" type="text" placeholder="Finish type" value={formData.finish} onChange={handleChange} className={inputClasses} />
-    </div>
+            {/* ROW 1: Item Number#, Product Name, Category */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Item Number#</label>
+              <input name="itemNumber" type="text" value={formData.itemNumber} onChange={handleChange} className={inputClasses} placeholder="#" />
+            </div>
+            <div className="md:col-span-7">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name <span className="text-red-500">*</span></label>
+              <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} required className={inputClasses} />
+            </div>
+            <div className="md:col-span-3">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Category <span className="text-red-500">*</span></label>
+              <select id="category" name="category" value={formData.category} onChange={handleChange} required className={inputClasses}>
+                {categories.map((cat) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+              </select>
+            </div>
 
-    {/* ROW 3: Weight, Price, Discount, Discounted Price */}
-    <div className="md:col-span-2">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Weight</label>
-      <input name="weight" type="text" value={formData.weight} onChange={handleChange} className={inputClasses} />
-    </div>
-    <div className="md:col-span-3">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Price</label>
-      <input name="price" type="number" value={formData.price} onChange={handleChange} className={inputClasses} />
-    </div>
-    <div className="md:col-span-3">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Discount</label>
-      <input name="discount" type="number" value={formData.discount} onChange={handleChange} className={inputClasses} />
-    </div>
-    <div className="md:col-span-4">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Discounted Price</label>
-      <input name="discountedPrice" type="number" value={calculateDiscountedPrice()} readOnly className={`${inputClasses} bg-gray-50 font-bold text-indigo-700`} />
-    </div>
+            {/* ROW 2: Item Dimensions & Finish (Aligned Heights) */}
+            <div className="md:col-span-5">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Item Dimensions (L×W×H)</label>
+              <div className="flex gap-1">
+                {["length", "width", "height"].map((key) => (
+                  <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.itemSize[key]} onChange={(e) => handleSizeChange(e, "itemSize")} className={sizeInputClasses} />
+                ))}
+              </div>
+            </div>
+            <div className="md:col-span-7">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Finish</label>
+              <input name="finish" type="text" placeholder="Finish type" value={formData.finish} onChange={handleChange} className={inputClasses} />
+            </div>
 
-    {/* ROW 4: Other Materials (Full Width) */}
-    <div className="md:col-span-12">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Other Materials</label>
-      <div className="flex gap-2">
-        <div className="flex-1 flex flex-wrap gap-2 p-2 border rounded-lg min-h-[42px] bg-white">
-            {formData.otherMaterial.map((material, index) => (
-            <span key={index} className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium border border-indigo-100">
-                {material} <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => removeMaterial(index)} />
-            </span>
-            ))}
-            <input 
-                type="text" 
-                value={materialInput} 
-                onChange={(e) => setMaterialInput(e.target.value)} 
-                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addMaterial())} 
-                placeholder="Type and press Enter..." 
-                className="flex-1 outline-none text-sm min-w-[120px]" 
-            />
-        </div>
-        <button type="button" onClick={addMaterial} className="px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors self-stretch">
-            <PlusCircle size={20} />
-        </button>
-      </div>
-    </div>
+            {/* ROW 3: Weight, Price, Discount, Discounted Price */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Weight</label>
+              <input name="weight" type="text" value={formData.weight} onChange={handleChange} className={inputClasses} />
+            </div>
+            <div className="md:col-span-3">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Price</label>
+              <input name="price" type="number" value={formData.price} onChange={handleChange} className={inputClasses} />
+            </div>
+            <div className="md:col-span-3">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Discount</label>
+              <input name="discount" type="number" value={formData.discount} onChange={handleChange} className={inputClasses} />
+            </div>
+            <div className="md:col-span-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Discounted Price</label>
+              <input name="discountedPrice" type="number" value={calculateDiscountedPrice()} readOnly className={`${inputClasses} bg-gray-50 font-bold text-indigo-700`} />
+            </div>
 
-    {/* ROW 5: Description (Full Width) */}
-    <div className="md:col-span-12">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-      <textarea id="description" name="description" value={formData.description} onChange={handleChange} className={`${inputClasses} min-h-20`} />
-    </div>
+            {/* ROW 4: Other Materials (Full Width) */}
+            <div className="md:col-span-12">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Other Materials</label>
+              <div className="flex gap-2">
+                <div className="flex-1 flex flex-wrap gap-2 p-2 border rounded-lg min-h-[42px] bg-white">
+                  {formData.otherMaterial.map((material, index) => (
+                    <span key={index} className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium border border-indigo-100">
+                      {material} <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => removeMaterial(index)} />
+                    </span>
+                  ))}
+                  <input
+                    type="text"
+                    value={materialInput}
+                    onChange={(e) => setMaterialInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addMaterial())}
+                    placeholder="Type and press Enter..."
+                    className="flex-1 outline-none text-sm min-w-[120px]"
+                  />
+                </div>
+                <button type="button" onClick={addMaterial} className="px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors self-stretch">
+                  <PlusCircle size={20} />
+                </button>
+              </div>
+            </div>
 
-    {/* ROW 6: Master Pack & Carton Size (Aligned Heights) */}
-    <div className="md:col-span-3">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Master Pack</label>
-      <input name="masterPack" type="text" value={formData.masterPack} onChange={handleChange} className={inputClasses} />
-    </div>
-    <div className="md:col-span-9">
-      <label className="block text-sm font-semibold text-gray-700 mb-1">Carton Size (L×W×H)</label>
-      <div className="flex gap-2">
-        {["length", "width", "height"].map((key) => (
-          <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.cartonSize[key]} onChange={(e) => handleSizeChange(e, "cartonSize")} className={sizeInputClasses} />
-        ))}
-      </div>
-    </div>
+            {/* ROW 5: Description (Full Width) */}
+            <div className="md:col-span-12">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+              <textarea id="description" name="description" value={formData.description} onChange={handleChange} className={`${inputClasses} min-h-20`} />
+            </div>
 
-  </div>
+            {/* ROW 6: Master Pack & Carton Size (Aligned Heights) */}
+            <div className="md:col-span-3">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Master Pack</label>
+              <input name="masterPack" type="text" value={formData.masterPack} onChange={handleChange} className={inputClasses} />
+            </div>
+            <div className="md:col-span-9">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Carton Size (L×W×H)</label>
+              <div className="flex gap-2">
+                {["length", "width", "height"].map((key) => (
+                  <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.cartonSize[key]} onChange={(e) => handleSizeChange(e, "cartonSize")} className={sizeInputClasses} />
+                ))}
+              </div>
+            </div>
 
-  {/* FOOTER */}
-  <div className="pt-6 border-t mt-6 flex justify-end">
-    <button type="submit" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg active:scale-95 transition-all" disabled={isCreating}>
-      {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlusCircle className="w-5 h-5" />}
-      {isCreating ? "Saving..." : "Create Product Template"}
-    </button>
-  </div>
-</form>
+          </div>
+
+          {/* FOOTER */}
+          <div className="pt-6 border-t mt-6 flex justify-end">
+            <button type="submit" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg active:scale-95 transition-all" disabled={isCreating}>
+              {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlusCircle className="w-5 h-5" />}
+              {isCreating ? "Saving..." : "Create Product Template"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
@@ -1093,12 +1093,12 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Price</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis%</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis. Price</th>
-              
-              
+
+
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Oth. Material</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">M.Pack</th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Ctn Size</th>
-              
+
               <th className="px-2 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
             </tr>
           </thead>
@@ -1119,9 +1119,9 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     {product.itemNumber || "—"}
                   </span>
                 </td>
-                <td className="px-3 py-2">
-                  <div className="flex flex-col min-w-[120px]">
-                    <div className="text-sm font-bold text-gray-900 truncate max-w-[140px]">
+                <td className="px-2 py-2">
+                  <div className="flex flex-col min-w-[140px]">
+                    <div className="text-sm font-bold text-gray-900 truncate max-w-[180px]">
                       {product.name}
                     </div>
                     <div className="text-[11px] text-gray-400 truncate max-w-[140px]">
@@ -1138,14 +1138,14 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                   {formatSize(product.itemSize)}
                 </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
-  <span 
-    className="block max-w-[150px] truncate" 
-    title={product.finish}
-  >
-    {product.finish || "—"}
-  </span>
-</td>
- <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
+                  <span
+                    className="block max-w-[150px] truncate"
+                    title={product.finish}
+                  >
+                    {product.finish || "—"}
+                  </span>
+                </td>
+                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
                   {product.weight ? `${product.weight}kg` : "—"}
                 </td>
                 <td className="px-2 py-2 whitespace-nowrap text-sm font-bold text-gray-800">
@@ -1159,8 +1159,8 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     ? formatCurrency(product.price * (1 - product.discountPercent / 100))
                     : "—"}
                 </td>
-                
-               
+
+
                 <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
                   <div className="flex flex-wrap gap-1">
                     {product.otherMaterial && Array.isArray(product.otherMaterial) && product.otherMaterial.length > 0 ? (
@@ -1184,7 +1184,7 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                 <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
                   {formatSize(product.cartonSize)}
                 </td>
-                
+
                 <td className="px-2 py-2 whitespace-nowrap text-center">
                   <div className="flex items-center justify-center gap-1">
                     <button
