@@ -62,11 +62,11 @@ const LoginPage = () => {
                 {/* Logo and Header */}
                 <div className="text-center space-y-4">
                     <div className="flex justify-center">
-                        <div className="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+                        <div className="w-24 h-24 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
                             <img 
                                 src={logo} 
                                 alt="Logo" 
-                                className="w-16 h-16 object-contain"
+                                className="w-22 h-22 object-contain"
                             />
                         </div>
                     </div>

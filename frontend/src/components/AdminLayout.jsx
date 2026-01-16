@@ -20,7 +20,7 @@ const AdminLayout = () => {
             <Navbar />
 
             {/* 3. Main Content Area */}
-            <main className="flex-1 max-w-8xl mx-auto w-full p-4 sm:p-4 lg:p-4">
+            <main className="flex-1 max-w-8xl mx-auto w-full sm:p-4 lg:p-4">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <Outlet />
                 </div>

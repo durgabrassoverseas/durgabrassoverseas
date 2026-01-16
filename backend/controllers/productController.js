@@ -186,6 +186,7 @@ export const getProducts = async (req, res) => {
     // 🔢 SORT
     const products = await Product.find(filter).populate("category")
       .sort({ itemNumber: sort === "asc" ? 1 : -1 })
+      .collation({ locale: "en", numericOrdering: true }) // <--- Add this line
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
