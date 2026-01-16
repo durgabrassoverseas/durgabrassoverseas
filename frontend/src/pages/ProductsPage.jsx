@@ -1085,27 +1085,27 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                   </div>
                 </div>
               </th>
-              <th className="px-3 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Product</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Category</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Item Size (L×W×H)</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Finish</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Wt</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Price</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis%</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis. Price</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Product</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Category</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Item Size (L×W×H)</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Finish</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Wt</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Price</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis%</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis. Price</th>
 
 
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Oth. Material</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">M.Pack</th>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Ctn Size</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Oth. Material</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">M.Pack</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Ctn Size</th>
 
-              <th className="px-2 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
+              <th className="px-1 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-400 bg-white">
             {products.map((product) => (
               <tr key={product._id} className="hover:bg-gray-50 transition-colors duration-150">
-                <td className="px-2 py-2 whitespace-nowrap">
+                <td className="px-1 py-2 whitespace-nowrap">
                   {product.imageURL ? (
                     <img src={product.imageURL} alt={product.name} className="w-12 h-12 object-contain rounded shadow-sm" />
                   ) : (
@@ -1119,9 +1119,9 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     {product.itemNumber || "—"}
                   </span>
                 </td>
-                <td className="px-2 py-2">
+                <td className="px-1 py-2">
                   <div className="flex flex-col min-w-[140px]">
-                    <div className="text-sm font-bold text-gray-900 truncate max-w-[180px]">
+                    <div className="text-sm font-bold text-gray-900 truncate max-w-[230px]">
                       {product.name}
                     </div>
                     <div className="text-[11px] text-gray-400 truncate max-w-[140px]">
@@ -1129,15 +1129,15 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     </div>
                   </div>
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap">
+                <td className="px-1 py-2 whitespace-nowrap">
                   <span className="text-sm text-gray-600 flex items-center gap-1">
                     {product.category?.name || "—"}
                   </span>
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
+                <td className="px-1 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
                   {formatSize(product.itemSize)}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600">
                   <span
                     className="block max-w-[150px] truncate"
                     title={product.finish}
@@ -1145,23 +1145,23 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     {product.finish || "—"}
                   </span>
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600">
                   {product.weight ? `${product.weight}kg` : "—"}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-bold text-gray-800">
+                <td className="px-1 py-2 whitespace-nowrap text-sm font-bold text-gray-800">
                   {formatCurrency(product.price)}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-bold text-red-600 text-center">
+                <td className="px-1 py-2 whitespace-nowrap text-sm font-bold text-red-600 text-center">
                   {product.discountPercent ? `${product.discountPercent}%` : "—"}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-bold text-red-700">
+                <td className="px-1 py-2 whitespace-nowrap text-sm font-bold text-red-700">
                   {product.discountPercent
                     ? formatCurrency(product.price * (1 - product.discountPercent / 100))
                     : "—"}
                 </td>
 
 
-                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
                   <div className="flex flex-wrap gap-1">
                     {product.otherMaterial && Array.isArray(product.otherMaterial) && product.otherMaterial.length > 0 ? (
                       product.otherMaterial.map((material, idx) => (
@@ -1178,14 +1178,14 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     )}
                   </div>
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm text-center text-gray-600">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-center text-gray-600">
                   {product.masterPack || "—"}
                 </td>
-                <td className="px-2 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
+                <td className="px-1 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
                   {formatSize(product.cartonSize)}
                 </td>
 
-                <td className="px-2 py-2 whitespace-nowrap text-center">
+                <td className="px-1 py-2 whitespace-nowrap text-center">
                   <div className="flex items-center justify-center gap-1">
                     <button
                       onClick={(e) => { e.stopPropagation(); downloadQR(product); }}
