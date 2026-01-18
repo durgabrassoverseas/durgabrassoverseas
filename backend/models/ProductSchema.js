@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+const sizeSchema = new mongoose.Schema(
+  {
+    length: String,
+    width: String,
+    height: String,
+  },
+  { _id: false } // optional: prevents extra _id for each size
+);
+
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
   itemNumber: { type: String, required: true, trim: true },
@@ -10,7 +19,11 @@ const productSchema = new mongoose.Schema({
   description: String,
   category: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
 
-  itemSize: {length: String, width: String, height: String},
+  // 🔥 ARRAY of item sizes
+    itemSize: {
+      type: [sizeSchema],
+      default: [],
+    },
   masterPack: String,
   cartonSize: {length: String, width: String, height: String},
   weight: String,

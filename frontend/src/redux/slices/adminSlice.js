@@ -57,7 +57,6 @@ export const createProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   "admin/updateProduct",
   async ({ productId, field, value}, thunkAPI) => {
-    console.log("Updating product:", { productId, field, value }); // Debugging line
     try {
       const res = await axiosInstance.patch(
           `/products/${productId}/update-field`,
