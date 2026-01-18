@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchProductByItemNumber } from "../../redux/slices/userSlice";
+import { fetchProductByItemNumber, fetchProductByProductId } from "../../redux/slices/userSlice";
 import {
     Weight,
     Layers,
@@ -44,7 +44,7 @@ const Spec = ({ label, value, IconComponent, isList = false }) => (
 const UserItemPage = () => {
     const [showDiscount, setShowDiscount] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-    const { itemNumber } = useParams();
+    const { productId } = useParams();
     const dispatch = useDispatch();
     const { product, loading, error } = useSelector((state) => state.user);
 
@@ -64,10 +64,16 @@ const UserItemPage = () => {
     };
 
     useEffect(() => {
-        if (itemNumber) {
-            dispatch(fetchProductByItemNumber(itemNumber));
+        if (productId) {
+            dispatch(fetchProductByProductId(productId));
         }
-    }, [dispatch, itemNumber]);
+    }, [dispatch, productId]);
+
+    // useEffect(() => {
+    //     if (itemNumber) {
+    //         dispatch(fetchProductByItemNumber(itemNumber));
+    //     }
+    // }, [dispatch, itemNumber]);
 
     // const itemSize = useMemo(() =>
     //     product?.itemSize ? `${product.itemSize.length}" × ${product.itemSize.width}" × ${product.itemSize.height}"` : 'N/A',
@@ -120,8 +126,8 @@ const UserItemPage = () => {
     if (!product) {
         return (
             <div className="p-4 m-4 sm:m-8 max-w-lg mx-auto bg-yellow-50 rounded-xl shadow border border-yellow-300">
-                <p className="text-yellow-700 font-semibold text-base">Item Not Found</p>
-                <p className="text-sm mt-1">Could not retrieve details for Item: {itemNumber}</p>
+                <p className="text-yellow-700 font-semibold text-base">Product Not Found</p>
+                {/* <p className="text-sm mt-1">Could not retrieve details for Product: {productId}</p> */}
             </div>
         );
     }

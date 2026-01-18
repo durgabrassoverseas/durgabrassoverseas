@@ -19,8 +19,8 @@ const App = () => {
 
         {/* Public */}
         <Route path="/" element={<LoginPage />} />
-        <Route path="/:slug/:itemNumber" element={<UserItemPage />} />
-
+        {/* <Route path="/:slug/:itemNumber" element={<UserItemPage />} /> */}
+        <Route path="/:productId" element={<UserItemPage />} />
         {/* Admin */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<DashboardPage />} />

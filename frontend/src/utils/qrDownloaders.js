@@ -42,7 +42,8 @@ const drawImageContain = (ctx, img, x, y, boxWidth, boxHeight) => {
 };
 
 export const downloadQR = async (product) => {
-  const qrValue = `${import.meta.env.VITE_QR_BASE_URL}/${product.slug}/${product.itemNumber}`;
+  // const qrValue = `${import.meta.env.VITE_QR_BASE_URL}/${product.slug}/${product.itemNumber}`;
+  const qrValue = `${import.meta.env.VITE_QR_BASE_URL}/${product._id}`;
 
   try {
     const size = 900;
@@ -134,7 +135,7 @@ export const downloadQR = async (product) => {
     const pngUrl = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = pngUrl;
-    link.download = `durga-brass-${product.slug}-${product.itemNumber}.png`;
+    link.download = `${product.itemNumber}-${product.name}.png`;
     link.click();
   } catch (err) {
     console.error("QR generation failed:", err);
@@ -155,7 +156,8 @@ export const downloadAllQRsZip = async (products) => {
     const footerHeight = 100;
 
     for (const product of products) {
-      const qrValue = `${import.meta.env.VITE_QR_BASE_URL}/${product.slug}/${product.itemNumber}`;
+      // const qrValue = `${import.meta.env.VITE_QR_BASE_URL}/${product.slug}/${product.itemNumber}`;
+      const qrValue = `${import.meta.env.VITE_QR_BASE_URL}/${product._id}`;
 
       const rightImage = await loadImageSafe(product.imageURL, demoImg);
 
@@ -239,7 +241,7 @@ export const downloadAllQRsZip = async (products) => {
         .toDataURL("image/png")
         .replace(/^data:image\/png;base64,/, "");
 
-      folder.file(`${product.slug}-${product.itemNumber}.png`, base64, {
+      folder.file(`${product.itemNumber}-${product.name}-.png`, base64, {
         base64: true,
       });
     }

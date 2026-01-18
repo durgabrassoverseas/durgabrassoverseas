@@ -2,6 +2,23 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import axios from "axios";
 
+
+export const fetchProductByProductId = createAsyncThunk(
+  "user/getProductByProductId",
+  async (productId, thunkAPI) => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/product/id/${productId}`
+      );
+      return res.data; // product object
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.error || "Product not found"
+      );
+    }
+  }
+);
+
 export const fetchProductByItemNumber = createAsyncThunk(
   "user/getProductByItemNumber",
   async (itemNumber, thunkAPI) => {
@@ -10,7 +27,6 @@ export const fetchProductByItemNumber = createAsyncThunk(
       const res = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/product/${itemNumber}`
       );
-      console.log("Fetched product by itemNumber:", res.data);
       return res.data; // product object
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -69,6 +85,18 @@ const userSlice = createSlice({
                 state.item = action.payload;
             })
             .addCase(fetchItemBySKU.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchProductByProductId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchProductByProductId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.product = action.payload;
+            })
+            .addCase(fetchProductByProductId.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

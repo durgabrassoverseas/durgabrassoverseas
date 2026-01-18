@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Product from "../models/ProductSchema.js";
 import { generateSlug } from "../utils/helperFunctions.js";
 
@@ -93,7 +94,7 @@ export const updateProductField = async (req, res) => {
 
     // Auto-update slug if name is edited
     if (field === "name") {
-      updateData.slug = generateSlug(value);
+      updateData.slug = generateSlug(value, updateData.itemNumber || undefined);
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -126,6 +127,22 @@ export const deleteProduct = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
     res.json({ success: true, message: "Product deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getProductByProductId = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    if(!mongoose.Types.ObjectId.isValid(productId)){
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
+    const product = await Product.findById(productId).populate("category");
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    res.json(product);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

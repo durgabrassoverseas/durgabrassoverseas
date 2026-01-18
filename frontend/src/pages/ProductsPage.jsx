@@ -27,6 +27,7 @@ import {
 import { downloadQR, downloadAllQRsZip } from '../utils/qrDownloaders.js';
 import { exportProductsToExcel } from "../utils/excelExporter.js";
 import { uploadImageToCloudinary } from "../utils/cloudinaryUploader.js";
+import { fetchDashboardStats } from "../redux/slices/adminSlice";
 
 /* ----------------------------------
 PRODUCT FIELDS (Metadata for Modals)
@@ -1230,6 +1231,8 @@ const ProductsPage = () => {
   const { products, categories, pagination, loading } = useSelector(
     (state) => state.admin
   );
+
+  const { stats } = useSelector((state) => state.admin);
   const [currentPage, setCurrentPage] = useState(1);
 
   console.log(products);
@@ -1253,6 +1256,10 @@ const ProductsPage = () => {
 
     return () => clearTimeout(timer);
   }, [searchTerm]);
+
+    useEffect(() => {
+        dispatch(fetchDashboardStats(localStorage.getItem("token")));
+      }, [dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -1340,7 +1347,7 @@ const ProductsPage = () => {
               Product Catalog
             </h1>
             <p className="text-gray-500 text-sm sm:text-base lg:text-lg">
-              Manage your product templates ({products.length} total)
+              Manage your product templates ({stats?.totalProducts} total)
             </p>
           </div>
 
@@ -1385,7 +1392,7 @@ const ProductsPage = () => {
               onChange={handleCategoryChange}
               className="flex-1 text-sm font-medium focus:outline-none bg-transparent border-none"
             >
-              <option value="all">All Categories ({products.length})</option>
+              <option value="all">All Categories ({categories?.length})</option>
               {categories.map((cat) => (
                 <option key={cat._id} value={cat._id}>
                   {cat.name}

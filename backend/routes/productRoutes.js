@@ -1,5 +1,5 @@
 import express from "express";
-import { createProduct, deleteProduct, updateProductField, getProductsByCategory, getProductByItemNumber, getProducts } from "../controllers/productController.js";
+import { createProduct, deleteProduct, updateProductField, getProductsByCategory, getProductByItemNumber, getProducts, getProductByProductId } from "../controllers/productController.js";
 import { authenticate, isAdmin, isAdminOrStaff } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -11,6 +11,7 @@ router.patch("/products/:id/update-field", authenticate, isAdminOrStaff, updateP
 router.delete("/products/:id", authenticate, isAdmin, deleteProduct);
 router.get("/products/:categoryId", getProductsByCategory);
 router.get("/product/:itemNumber", getProductByItemNumber);
+router.get("/product/id/:productId", getProductByProductId);
 
 // router.get("/products", searchProducts);
 
