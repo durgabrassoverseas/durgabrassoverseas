@@ -179,36 +179,37 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
   const token = localStorage.getItem("token");
 
   const [editing, setEditing] = useState(false);
-  const [localMaterials, setLocalMaterials] = useState(Array.isArray(materials) ? materials : []);
-  const [newMaterial, setNewMaterial] = useState("");
+  // Ensure at least one input exists for the "first material" experience
+  const [localMaterials, setLocalMaterials] = useState(
+    Array.isArray(materials) && materials.length > 0 ? materials : [""]
+  );
 
   useEffect(() => {
     if (!editing) {
-      setLocalMaterials(Array.isArray(materials) ? materials : []);
+      setLocalMaterials(Array.isArray(materials) && materials.length > 0 ? materials : [""]);
     }
   }, [materials, editing]);
 
-  const addMaterial = () => {
-    if (newMaterial.trim() === "") return;
-    setLocalMaterials([...localMaterials, newMaterial.trim()]);
-    setNewMaterial("");
+  const handleMaterialChange = (index, value) => {
+    const updated = [...localMaterials];
+    updated[index] = value;
+    setLocalMaterials(updated);
+  };
+
+  const addMaterialSlot = () => {
+    setLocalMaterials([...localMaterials, ""]);
   };
 
   const removeMaterial = (index) => {
-    setLocalMaterials(localMaterials.filter((_, i) => i !== index));
+    // Keep at least one empty input if deleting the last one
+    const updated = localMaterials.filter((_, i) => i !== index);
+    setLocalMaterials(updated.length > 0 ? updated : [""]);
   };
 
   const save = () => {
     const cleanedMaterials = localMaterials.filter(m => m.trim() !== "");
 
-    dispatch(
-      updateProduct({
-        productId,
-        field: "otherMaterial",
-        value: cleanedMaterials,
-        token,
-      })
-    )
+    dispatch(updateProduct({ productId, field: "otherMaterial", value: cleanedMaterials, token }))
       .unwrap()
       .then(() => toast.success("Materials updated"))
       .catch((err) => toast.error(err.message || "Update failed"));
@@ -216,101 +217,53 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
     setEditing(false);
   };
 
-  const cancel = () => {
-    setLocalMaterials(Array.isArray(materials) ? materials : []);
-    setNewMaterial("");
-    setEditing(false);
-  };
-
   return (
     <div className="flex flex-col gap-2 min-h-8">
       {editing ? (
         <div className="space-y-2">
-          {/* Existing Materials */}
-          <div className="flex flex-col gap-1">
-            {localMaterials.map((material, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={material}
-                  onChange={(e) => {
-                    const updated = [...localMaterials];
-                    updated[index] = e.target.value;
-                    setLocalMaterials(updated);
-                  }}
-                  className="border border-indigo-300 px-2 py-1 rounded-lg flex-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          {localMaterials.map((material, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={material}
+                placeholder={index === 0 ? "First material..." : "Additional material..."}
+                onChange={(e) => handleMaterialChange(index, e.target.value)}
+                className="border border-indigo-300 px-2 py-1 rounded-lg flex-1 text-sm shadow-sm focus:ring-indigo-500"
+              />
+              {index === 0 ? (
+                <PlusCircle
+                  size={18}
+                  className="cursor-pointer text-indigo-600 hover:text-indigo-800 transition shrink-0"
+                  onClick={addMaterialSlot}
                 />
+              ) : (
                 <X
-                  size={16}
+                  size={18}
                   className="cursor-pointer text-red-500 hover:text-red-700 transition shrink-0"
                   onClick={() => removeMaterial(index)}
                 />
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          ))}
 
-          {/* Add New Material */}
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={newMaterial}
-              onChange={(e) => setNewMaterial(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  addMaterial();
-                }
-              }}
-              placeholder="Add material..."
-              className="border border-indigo-300 px-2 py-1 rounded-lg flex-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            <PlusCircle
-              size={16}
-              className="cursor-pointer text-green-600 hover:text-green-700 transition shrink-0"
-              onClick={addMaterial}
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 justify-end">
-            <button
-              onClick={save}
-              className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition"
-            >
-              <Check size={14} />
-              Save
-            </button>
-            <button
-              onClick={cancel}
-              className="flex items-center gap-1 px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition"
-            >
-              <X size={14} />
-              Cancel
-            </button>
+          <div className="flex gap-2 justify-end mt-2">
+            <button onClick={save} className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition">Save</button>
+            <button onClick={() => setEditing(false)} className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition">Cancel</button>
           </div>
         </div>
       ) : (
-        <>
-          <div className="flex flex-wrap gap-1 items-center">
-            {localMaterials.length > 0 ? (
-              localMaterials.map((material, index) => (
-                <span
-                  key={index}
-                  className="inline-flex items-center px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium"
-                >
-                  {material}
-                </span>
-              ))
-            ) : (
-              <span className="text-sm text-gray-500">—</span>
-            )}
-            <Pencil
-              size={14}
-              className="cursor-pointer text-gray-400 hover:text-indigo-600 transition shrink-0"
-              onClick={() => setEditing(true)}
-            />
-          </div>
-        </>
+        <div className="flex flex-wrap gap-1 items-center">
+          {materials.length > 0 ? (
+            materials.map((m, i) => (
+              <span key={i} className="inline-flex items-center px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium">
+                {m}
+              </span>
+            ))
+          ) : (
+            <span className="text-sm text-gray-500">—</span>
+          )}
+          <Pencil size={14} className="cursor-pointer text-gray-400 hover:text-indigo-600 transition ml-2" onClick={() => setEditing(true)} />
+        </div>
       )}
     </div>
   );
@@ -937,7 +890,7 @@ const [formData, setFormData] = useState({
   masterPack: "",
   weight: "",
   finish: "",
-  otherMaterial: [],
+  otherMaterial: [""],
   price: "",
   discountPercent: "",
   itemSize: [{ length: "", width: "", height: "" }], // Array now
@@ -994,21 +947,26 @@ const removeItemSize = (index) => {
     }));
   };
 
-  const addMaterial = () => {
-    if (materialInput.trim() === "") return;
-    setFormData(prev => ({
-      ...prev,
-      otherMaterial: [...prev.otherMaterial, materialInput.trim()]
-    }));
-    setMaterialInput("");
-  };
+ const handleMaterialChange = (index, value) => {
+  const updated = [...formData.otherMaterial];
+  updated[index] = value;
+  setFormData((prev) => ({ ...prev, otherMaterial: updated }));
+};
 
-  const removeMaterial = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      otherMaterial: prev.otherMaterial.filter((_, i) => i !== index)
-    }));
-  };
+const addMaterialSlot = () => {
+  setFormData((prev) => ({
+    ...prev,
+    otherMaterial: [...prev.otherMaterial, ""],
+  }));
+};
+
+const removeMaterialSlot = (index) => {
+  const updated = formData.otherMaterial.filter((_, i) => i !== index);
+  setFormData((prev) => ({
+    ...prev,
+    otherMaterial: updated.length > 0 ? updated : [""],
+  }));
+};
 
   const calculateDiscountedPrice = () => {
     const price = Number(formData.price);
@@ -1207,30 +1165,42 @@ const removeItemSize = (index) => {
             </div>
 
             {/* ROW 4: Other Materials (Full Width) */}
-            <div className="md:col-span-12">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Other Materials</label>
-              <div className="flex gap-2">
-                <div className="flex-1 flex flex-wrap gap-2 p-2 border rounded-lg min-h-[42px] bg-white">
-                  {formData.otherMaterial.map((material, index) => (
-                    <span key={index} className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium border border-indigo-100">
-                      {material} <X size={12} className="cursor-pointer hover:text-red-500" onClick={() => removeMaterial(index)} />
-                    </span>
-                  ))}
-                  <input
-                    type="text"
-                    value={materialInput}
-                    onChange={(e) => setMaterialInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addMaterial())}
-                    placeholder="Type and press Enter..."
-                    className="flex-1 outline-none text-sm min-w-[120px]"
-                  />
-                </div>
-                <button type="button" onClick={addMaterial} className="px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors self-stretch">
-                  <PlusCircle size={20} />
-                </button>
-              </div>
-            </div>
-
+            {/* ROW 4: Other Materials */}
+{/* ROW 4: Other Materials */}
+<div className="md:col-span-12">
+  <label className="block text-sm font-semibold text-gray-700 mb-1">Other Materials</label>
+  <div className="space-y-2">
+    {formData.otherMaterial.map((material, index) => (
+      <div key={index} className="flex gap-2 items-center">
+        <input
+          type="text"
+          value={material}
+          onChange={(e) => handleMaterialChange(index, e.target.value)}
+          placeholder={index === 0 ? "Enter first material (e.g. Iron)" : "Enter additional material"}
+          className={inputClasses}
+        />
+        {index === 0 ? (
+          <button
+            type="button"
+            onClick={addMaterialSlot}
+            className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm"
+            title="Add another material"
+          >
+            <PlusCircle size={20} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => removeMaterialSlot(index)}
+            className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+          >
+            <X size={20} />
+          </button>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
             {/* ROW 5: Description (Full Width) */}
             <div className="md:col-span-12">
               <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
