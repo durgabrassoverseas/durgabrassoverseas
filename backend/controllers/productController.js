@@ -93,9 +93,9 @@ export const updateProductField = async (req, res) => {
     const updateData = { [field]: value };
 
     // Auto-update slug if name is edited
-    if (field === "name") {
-      updateData.slug = generateSlug(value, updateData.itemNumber || undefined);
-    }
+    // if (field === "name") {
+    //   updateData.slug = generateSlug(value, updateData.itemNumber || undefined);
+    // }
 
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
