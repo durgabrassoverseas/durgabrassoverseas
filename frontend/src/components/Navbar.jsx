@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom"; // Added useNavigate
 import { LayoutDashboard, Package, Boxes, Grid, Menu, X, LogOut } from "lucide-react"; // Added LogOut icon
 import logo from "../assets/logo.png"; // adjust path if needed
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,16 +33,18 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           
           {/* Branding */}
-          <div className="flex items-center gap-2">
-            <img
+
+<Link to="/admin/dashboard" className="flex items-center gap-2">
+  <img
     src={logo}
     alt="Admin Logo"
-    className="w-12 h-12 object-fit rounded-full mr-1"
+    className="w-12 h-12 object-cover rounded-full mr-1"
   />
-            <span className="text-lg font-extrabold tracking-wider text-white">
-              DURGA BRASS OVERSEAS
-            </span>
-          </div>
+  <span className="text-lg font-extrabold tracking-wider text-white">
+    DURGA BRASS OVERSEAS
+  </span>
+</Link>
+
 
           {/* Right Section (Desktop) */}
           <div className="hidden md:flex items-center space-x-4">
