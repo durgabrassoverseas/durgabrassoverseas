@@ -48,6 +48,8 @@ const UserItemPage = () => {
     const dispatch = useDispatch();
     const { product, loading, error } = useSelector((state) => state.user);
 
+    console.log(product);
+
     const timerRef = useRef(null);
 
     const handlePressStart = () => {
@@ -81,16 +83,21 @@ const UserItemPage = () => {
     // );
 
     const itemSize = useMemo(() => {
-  if (!product?.itemSize) return "N/A";
+  if (!product?.itemSize?.length) return "N/A";
 
-  const dimensions = [
-    product.itemSize.length && `${product.itemSize.length}"`,
-    product.itemSize.width && `${product.itemSize.width}"`,
-    product.itemSize.height && `${product.itemSize.height}"`,
-  ].filter(Boolean);
+  return product.itemSize
+    .map(({ length, width, height }) => {
+      const dims = [
+        length && `${length}"`,
+        width && `${width}"`,
+        height && `${height}"`,
+      ].filter(Boolean);
 
-  return dimensions.length ? dimensions.join(" × ") : "N/A";
+      return dims.join(" × ");
+    })
+    .join(", ");
 }, [product?.itemSize]);
+
 
 
     const cartonSize = useMemo(() =>
