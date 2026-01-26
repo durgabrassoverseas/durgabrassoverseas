@@ -61,7 +61,7 @@ const formatSize = (size) => {
   const l = size.length ?? "—";
   const w = size.width ?? "—";
   const h = size.height ?? "—";
-  return `${l} × ${w} × ${h}`;
+  return `${l}×${w}×${h}`;
 };
 
 /* ----------------------------------
@@ -1298,7 +1298,7 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                   )}
                 </td>
                 <td className="px-2 py-2 whitespace-nowrap">
-                  <span className="text-[12px] font-mono text-gray-600">
+                  <span className="text-[12px] text-gray-600">
                     {product.itemNumber || "—"}
                   </span>
                 </td>
@@ -1320,11 +1320,11 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                 {/* <td className="px-1 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
                   {formatSize(product.itemSize)}
                 </td> */}
-                <td className="px-1 py-2 whitespace-nowrap text-sm font-mono text-gray-600">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600">
   <div className="flex flex-col gap-0.5">
     {Array.isArray(product.itemSize) && product.itemSize.length > 0 ? (
       product.itemSize.map((size, idx) => (
-        <span key={idx} className="text-xs">
+        <span key={idx} className="text-sm">
           {formatSize(size)}
         </span>
       ))
