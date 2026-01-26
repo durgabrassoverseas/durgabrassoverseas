@@ -1611,7 +1611,7 @@ const ProductsPage = () => {
             <span className="font-bold text-indigo-600">
               {products.length}
             </span>{" "}
-            of <span className="font-bold">{products.length}</span> products
+            of <span className="font-bold">{stats?.totalProducts}</span> products  
           </div>
         </div>
 
