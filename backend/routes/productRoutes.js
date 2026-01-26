@@ -11,7 +11,7 @@ router.patch("/products/:id/update-field", authenticate, isAdminOrStaff, updateP
 router.delete("/products/:id", authenticate, isAdmin, deleteProduct);
 router.get("/products/:categoryId", getProductsByCategory);
 router.get("/product/:itemNumber", getProductByItemNumber);
-router.get("/product/id/:productId", getProductByProductId);
+router.get("/product/id/:productId", authenticate, isAdmin, getProductByProductId);
 
 // router.get("/products", searchProducts);
 
