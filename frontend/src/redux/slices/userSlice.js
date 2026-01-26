@@ -6,9 +6,18 @@ import axios from "axios";
 export const fetchProductByProductId = createAsyncThunk(
   "user/getProductByProductId",
   async (productId, thunkAPI) => {
+    const token = localStorage.getItem("token"); // or from Redux
     try {
+      // const res = await axios.get(
+      //   `${import.meta.env.VITE_API_BASE_URL}/product/id/${productId}`
+      // );
       const res = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/product/id/${productId}`
+        `${import.meta.env.VITE_API_BASE_URL}/product/id/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return res.data; // product object
     } catch (error) {
