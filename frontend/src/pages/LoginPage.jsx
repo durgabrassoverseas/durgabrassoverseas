@@ -148,7 +148,7 @@ const LoginPage = () => {
                     </div>
                     <a 
                         href="#" 
-                        className="font-semibold text-indigo-600 hover:text-indigo-700 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-indigo-600 after:transition-all hover:after:w-full"
+                        className="font-semibold text-red-800 hover:text-red-900 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-indigo-600 after:transition-all hover:after:w-full"
                     >
                         Forgot password?
                     </a>
