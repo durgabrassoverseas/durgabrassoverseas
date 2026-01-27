@@ -5,6 +5,7 @@ import {
   fetchCategories,
   updateProduct,
   createProduct,
+  deleteProduct,
 } from "../redux/slices/adminSlice";
 import toast from "react-hot-toast";
 import {
@@ -22,7 +23,8 @@ import {
   Box,
   Download,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Trash2
 } from "lucide-react";
 import { downloadQR, downloadAllQRsZip } from '../utils/qrDownloaders.js';
 import { exportProductsToExcel } from "../utils/excelExporter.js";
@@ -1239,7 +1241,7 @@ const removeMaterialSlot = (index) => {
 /* ----------------------------------
 MAIN PRODUCTS TABLE (NO SKU)
 ----------------------------------- */
-const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPage }) => {
+const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, setCurrentPage }) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       <div className="overflow-x-auto">
@@ -1395,6 +1397,13 @@ const ProductsTable = ({ products, onEdit, sortOrder, setSortOrder, setCurrentPa
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
+                    <button
+      onClick={() => onDelete(product._id)}
+      className="p-1 text-red-600 hover:bg-red-50 rounded transition"
+      title="Delete Product"
+    >
+      <Trash2 className="w-4 h-4" />
+    </button>
                   </div>
                 </td>
               </tr>
@@ -1436,6 +1445,8 @@ const ProductsPage = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
 
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+
   // Filter and Search States
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -1474,6 +1485,27 @@ const ProductsPage = () => {
     // dispatch(fetchFinishes());
   }, [dispatch]);
 
+
+
+  const handleDeleteProduct = (productId) => {
+  setDeleteConfirm(productId);
+};
+
+const confirmDelete = () => {
+  if (deleteConfirm) {
+    dispatch(deleteProduct({ productId: deleteConfirm, }))
+      .unwrap()
+      .then(() => {
+        toast.success("Product deleted successfully");
+        setDeleteConfirm(null);
+       
+      })
+      .catch((err) => {
+        toast.error(err.message || "Failed to delete product");
+        setDeleteConfirm(null);
+      });
+  }
+};
 
   const handleDownloadAllQRZips = async () => {
     if (products.length === 0) {
@@ -1619,6 +1651,7 @@ const ProductsPage = () => {
         <ProductsTable
           products={products}
           onEdit={setSelectedProductId}
+          onDelete={handleDeleteProduct}
           sortOrder={sortOrder}
           setSortOrder={setSortOrder}
           setCurrentPage={setCurrentPage}
@@ -1661,8 +1694,42 @@ const ProductsPage = () => {
         {isCreateModalOpen && (
           <CreateProductModal onClose={() => setIsCreateModalOpen(false)} />
         )}
+
+
+        {deleteConfirm && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+    <div className="bg-white rounded-2xl p-6 max-w-md shadow-2xl">
+      <h3 className="text-xl font-bold text-gray-900 mb-3">Delete Product</h3>
+      <p className="text-gray-600 mb-6">
+        Are you sure you want to delete this product? This action cannot be undone.
+      </p>
+      <div className="flex gap-3 justify-end">
+        <button
+          onClick={() => setDeleteConfirm(null)}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={confirmDelete}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
+        >
+          <Trash2 className="w-4 h-4" />
+          Delete
+        </button>
       </div>
     </div>
+  </div>
+)}
+
+        
+      </div>
+
+
+      
+    </div>
+    
+    
   );
 };
 

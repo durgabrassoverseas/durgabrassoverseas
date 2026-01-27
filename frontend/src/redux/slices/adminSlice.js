@@ -72,6 +72,26 @@ export const updateProduct = createAsyncThunk(
   }
 );
 
+export const deleteProduct = createAsyncThunk(
+  "admin/deleteProduct",
+  async ({ productId }, thunkAPI) => {
+    console.log("Deleting product with ID:", productId); // Debugging line
+    try {
+      const res = await axiosInstance.delete(
+        `/product/${productId}`,
+      );
+      console.log("Delete product response data:", res.data); // Debugging line
+      return productId; // return deleted product id
+    }
+    catch (error) {
+      console.error("Delete product error:", error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Delete product failed"
+      );
+    }
+  }
+);
+
 export const createItem = createAsyncThunk(
   "admin/createItem",
   async ({ productId, quantity, token }, thunkAPI) => {
@@ -271,6 +291,20 @@ const adminSlice = createSlice({
         }
       })
       .addCase(updateProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = state.products.filter(
+          (prod) => prod._id !== action.payload
+        );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

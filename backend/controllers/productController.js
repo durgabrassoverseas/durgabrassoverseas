@@ -174,8 +174,6 @@ export const getProductByItemNumber = async (req, res) => {
 };
 
 export const getProducts = async (req, res) => {
-  console.log("Search products called with query:", req.query);
-
   try {
     const {
       search = "",
@@ -218,7 +216,6 @@ export const getProducts = async (req, res) => {
       sortBy: "itemNumber",
       sortOrder: sort,
     });
-    console.log("Products fetched:", products);
   } catch (err) {
     console.error("Search products error:", err);
     res.status(500).json({ error: err.message });
