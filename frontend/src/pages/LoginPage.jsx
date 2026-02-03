@@ -71,7 +71,7 @@ const LoginPage = () => {
                         </div>
                     </div>
                     <div>
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        <h2 className="text-3xl font-bold text-red-800 uppercase">
                             Welcome Back
                         </h2>
                         <p className="text-sm text-gray-500 mt-2">
@@ -148,7 +148,7 @@ const LoginPage = () => {
                     </div>
                     <a 
                         href="#" 
-                        className="font-semibold text-indigo-600 hover:text-indigo-700 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-indigo-600 after:transition-all hover:after:w-full"
+                        className="font-semibold text-red-800 hover:text-red-900 transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-indigo-600 after:transition-all hover:after:w-full"
                     >
                         Forgot password?
                     </a>
@@ -158,7 +158,7 @@ const LoginPage = () => {
                 <button
                     disabled={loading}
                     type="submit"
-                    className="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-semibold text-white bg-red-800 hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-800 transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                     {loading ? (
                         <>
