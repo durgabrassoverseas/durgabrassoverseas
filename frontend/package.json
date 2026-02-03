@@ -12,8 +12,10 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.1",
     "@tailwindcss/vite": "^4.1.18",
+    "@zxing/browser": "^0.1.5",
     "axios": "^1.13.2",
     "file-saver": "^2.0.5",
+    "html5-qrcode": "^2.3.8",
     "jszip": "^3.10.1",
     "lucide-react": "^0.561.0",
     "qrcode": "^1.5.4",

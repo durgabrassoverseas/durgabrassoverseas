@@ -56,8 +56,8 @@ export const downloadQR = async (product) => {
     const qrCanvas = document.createElement("canvas");
     await QRCode.toCanvas(qrCanvas, qrValue, {
       width: size,
-      margin: 2,
-      errorCorrectionLevel: "H",
+      margin: 4,
+      errorCorrectionLevel: "L",
     });
 
     const canvas = document.createElement("canvas");
@@ -164,8 +164,8 @@ export const downloadAllQRsZip = async (products) => {
       const qrCanvas = document.createElement("canvas");
       await QRCode.toCanvas(qrCanvas, qrValue, {
         width: size,
-        margin: 2,
-        errorCorrectionLevel: "H",
+        margin: 4,
+        errorCorrectionLevel: "L",
       });
 
       const canvas = document.createElement("canvas");

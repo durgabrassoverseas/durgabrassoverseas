@@ -16,7 +16,8 @@ import {
   X,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import BarcodeScannerComponent from "react-qr-barcode-scanner";
+// import BarcodeScannerComponent from "react-qr-barcode-scanner";
+import QRScanner from "../components/QRScanner";
 
 const COLOR_CLASSES = {
   indigo: {
@@ -253,22 +254,7 @@ const DashboardPage = () => {
             </h2>
 
             <div className="overflow-hidden rounded-xl border">
-              <BarcodeScannerComponent
-                width="100%"
-                height={300}
-                onUpdate={(err, result) => {
-                  if (result) {
-                    const scannedText = result.text;
-
-                    setOpenScanner(false);
-
-                    // ✅ Redirect to URL inside QR
-                    if (scannedText.startsWith("http")) {
-                      window.open(scannedText, "_blank", "noopener,noreferrer");
-                    }
-                  }
-                }}
-              />
+              <QRScanner onClose={() => setOpenScanner(false)} />
             </div>
 
             <p className="text-xs text-gray-500 text-center mt-3">
