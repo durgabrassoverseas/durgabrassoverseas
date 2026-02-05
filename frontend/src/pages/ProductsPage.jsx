@@ -1679,10 +1679,6 @@ const ProductsPage = () => {
     ? JSON.parse(localStorage.getItem("user"))
     : null;
 
-  console.log("User Role:", user?.role);
-
-  console.log(products);
-
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
@@ -1816,29 +1812,35 @@ const ProductsPage = () => {
             </p>
           </div>
 
+    
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
-            <button
-              onClick={handleExportExcel}
-              className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
-            >
-              <Download className="w-4 h-4 shrink-0" />
-              <span className="truncate">Excel</span>
-            </button>
+            {user?.role === "admin" && (
+  <>
+    <button
+      onClick={handleExportExcel}
+      className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
+    >
+      <Download className="w-4 h-4 shrink-0" />
+      <span className="truncate">Excel</span>
+    </button>
 
-            <button
-              onClick={handleDownloadAllQRZips}
-              disabled={isDownloadingAll}
-              className="flex items-center justify-center gap-2 bg-green-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition shadow disabled:opacity-50"
-            >
-              {isDownloadingAll ? (
-                <Loader2 className="w-4 h-4 animate-spin shrink-0" />
-              ) : (
-                <Download className="w-4 h-4 shrink-0" />
-              )}
-              <span className="truncate">
-                {isDownloadingAll ? "..." : "All QRs"}
-              </span>
-            </button>
+    <button
+      onClick={handleDownloadAllQRZips}
+      disabled={isDownloadingAll}
+      className="flex items-center justify-center gap-2 bg-green-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition shadow disabled:opacity-50"
+    >
+      {isDownloadingAll ? (
+        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+      ) : (
+        <Download className="w-4 h-4 shrink-0" />
+      )}
+      <span className="truncate">
+        {isDownloadingAll ? "..." : "All QRs"}
+      </span>
+    </button>
+  </>
+)}
+
 
             <button
               onClick={() => setIsCreateModalOpen(true)}
