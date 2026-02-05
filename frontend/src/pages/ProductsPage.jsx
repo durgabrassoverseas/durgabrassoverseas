@@ -1534,11 +1534,11 @@ const ProductsTable = ({
                   </span>
                 </td>
                 <td className="px-1 py-2">
-                  <div className="flex flex-col min-w-[140px]">
-                    <div className="text-sm font-bold text-gray-900 truncate max-w-[230px]">
+                  <div className="flex flex-col min-w-35">
+                    <div className="text-sm font-bold text-gray-900 truncate max-w-57.5">
                       {product.name}
                     </div>
-                    <div className="text-[11px] text-gray-400 truncate max-w-[140px]">
+                    <div className="text-[11px] text-gray-400 truncate max-w-35">
                       {product.description || "No description"}
                     </div>
                   </div>
@@ -1567,7 +1567,7 @@ const ProductsTable = ({
                 </td>
                 <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600">
                   <span
-                    className="block max-w-[150px] truncate"
+                    className="block max-w-37.5 truncate"
                     title={product.finish}
                   >
                     {product.finish || "—"}
@@ -1592,7 +1592,7 @@ const ProductsTable = ({
                     : "—"}
                 </td>
 
-                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600 max-w-20">
                   <div className="flex flex-wrap gap-1">
                     {product.otherMaterial &&
                     Array.isArray(product.otherMaterial) &&
@@ -1600,7 +1600,7 @@ const ProductsTable = ({
                       ? product.otherMaterial.map((material, idx) => (
                           <span
                             key={idx}
-                            className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-[10px] truncate max-w-[70px]"
+                            className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-[10px] truncate max-w-17.5"
                             title={material}
                           >
                             {material}
