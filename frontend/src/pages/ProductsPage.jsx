@@ -24,9 +24,9 @@ import {
   Download,
   ChevronUp,
   ChevronDown,
-  Trash2
+  Trash2,
 } from "lucide-react";
-import { downloadQR, downloadAllQRsZip } from '../utils/qrDownloaders.js';
+import { downloadQR, downloadAllQRsZip } from "../utils/qrDownloaders.js";
 import { exportProductsToExcel } from "../utils/excelExporter.js";
 import { uploadImageToCloudinary } from "../utils/cloudinaryUploader.js";
 import { fetchDashboardStats, fetchAllProductsForExport } from "../redux/slices/adminSlice";
@@ -104,7 +104,7 @@ const EditableField = ({ value, field, productId, type = "text" }) => {
         field,
         value: finalValue,
         token,
-      })
+      }),
     )
       .unwrap()
       .then(() => toast.success(`${field} updated`))
@@ -131,8 +131,9 @@ const EditableField = ({ value, field, productId, type = "text" }) => {
     onChange: (e) => setLocalValue(e.target.value),
     onBlur: save,
     onKeyDown: handleKeyDown,
-    className: `border border-indigo-300 px-2 py-1 rounded-lg w-full text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition ${type === "textarea" ? "min-h-[80px]" : ""
-      }`,
+    className: `border border-indigo-300 px-2 py-1 rounded-lg w-full text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition ${
+      type === "textarea" ? "min-h-[80px]" : ""
+    }`,
     placeholder: `Enter ${field}`,
   };
 
@@ -183,12 +184,14 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
   const [editing, setEditing] = useState(false);
   // Ensure at least one input exists for the "first material" experience
   const [localMaterials, setLocalMaterials] = useState(
-    Array.isArray(materials) && materials.length > 0 ? materials : [""]
+    Array.isArray(materials) && materials.length > 0 ? materials : [""],
   );
 
   useEffect(() => {
     if (!editing) {
-      setLocalMaterials(Array.isArray(materials) && materials.length > 0 ? materials : [""]);
+      setLocalMaterials(
+        Array.isArray(materials) && materials.length > 0 ? materials : [""],
+      );
     }
   }, [materials, editing]);
 
@@ -209,9 +212,16 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
   };
 
   const save = () => {
-    const cleanedMaterials = localMaterials.filter(m => m.trim() !== "");
+    const cleanedMaterials = localMaterials.filter((m) => m.trim() !== "");
 
-    dispatch(updateProduct({ productId, field: "otherMaterial", value: cleanedMaterials, token }))
+    dispatch(
+      updateProduct({
+        productId,
+        field: "otherMaterial",
+        value: cleanedMaterials,
+        token,
+      }),
+    )
       .unwrap()
       .then(() => toast.success("Materials updated"))
       .catch((err) => toast.error(err.message || "Update failed"));
@@ -228,7 +238,9 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
               <input
                 type="text"
                 value={material}
-                placeholder={index === 0 ? "First material..." : "Additional material..."}
+                placeholder={
+                  index === 0 ? "First material..." : "Additional material..."
+                }
                 onChange={(e) => handleMaterialChange(index, e.target.value)}
                 className="border border-indigo-300 px-2 py-1 rounded-lg flex-1 text-sm shadow-sm focus:ring-indigo-500"
               />
@@ -249,22 +261,39 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
           ))}
 
           <div className="flex gap-2 justify-end mt-2">
-            <button onClick={save} className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition">Save</button>
-            <button onClick={() => setEditing(false)} className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition">Cancel</button>
+            <button
+              onClick={save}
+              className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       ) : (
         <div className="flex flex-wrap gap-1 items-center">
           {materials.length > 0 ? (
             materials.map((m, i) => (
-              <span key={i} className="inline-flex items-center px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium">
+              <span
+                key={i}
+                className="inline-flex items-center px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-medium"
+              >
                 {m}
               </span>
             ))
           ) : (
             <span className="text-sm text-gray-500">—</span>
           )}
-          <Pencil size={14} className="cursor-pointer text-gray-400 hover:text-indigo-600 transition ml-2" onClick={() => setEditing(true)} />
+          <Pencil
+            size={14}
+            className="cursor-pointer text-gray-400 hover:text-indigo-600 transition ml-2"
+            onClick={() => setEditing(true)}
+          />
         </div>
       )}
     </div>
@@ -301,7 +330,7 @@ const EditableCategory = ({ product }) => {
         field: "category",
         value,
         token,
-      })
+      }),
     )
       .unwrap()
       .then(() => toast.success("Category updated"))
@@ -381,7 +410,7 @@ const EditableFinish = ({ product }) => {
         field: "finish",
         value,
         token,
-      })
+      }),
     )
       .unwrap()
       .then(() => toast.success("Finish updated"))
@@ -401,21 +430,32 @@ const EditableFinish = ({ product }) => {
             onBlur={save}
             className="border border-indigo-300 px-2 py-1 rounded-lg text-sm w-full shadow-sm focus:ring-indigo-500"
           />
-          <Check size={16} className="cursor-pointer text-green-600" onClick={save} />
-          <X size={16} className="cursor-pointer text-red-500" onClick={() => setEditing(false)} />
+          <Check
+            size={16}
+            className="cursor-pointer text-green-600"
+            onClick={save}
+          />
+          <X
+            size={16}
+            className="cursor-pointer text-red-500"
+            onClick={() => setEditing(false)}
+          />
         </>
       ) : (
         <>
           <span className="text-sm text-gray-700 w-full truncate">
             {product.finish || "—"}
           </span>
-          <Pencil size={14} className="cursor-pointer text-gray-400" onClick={() => setEditing(true)} />
+          <Pencil
+            size={14}
+            className="cursor-pointer text-gray-400"
+            onClick={() => setEditing(true)}
+          />
         </>
       )}
     </div>
   );
 };
-
 
 const EditableSizeField = ({ value, field, productId }) => {
   const dispatch = useDispatch();
@@ -461,7 +501,7 @@ const EditableSizeField = ({ value, field, productId }) => {
         field,
         value: finalValue,
         token,
-      })
+      }),
     )
       .unwrap()
       .then(() => toast.success(`${field} updated`))
@@ -480,14 +520,24 @@ const EditableSizeField = ({ value, field, productId }) => {
               type="number"
               placeholder={dim[0].toUpperCase()}
               value={localSize[dim]}
-              onChange={(e) => setLocalSize({ ...localSize, [dim]: e.target.value })}
+              onChange={(e) =>
+                setLocalSize({ ...localSize, [dim]: e.target.value })
+              }
               className="w-16 border border-indigo-300 px-1 py-1 rounded text-sm focus:ring-1 focus:ring-indigo-500 outline-none"
             />
           ))}
         </div>
         <div className="flex gap-1 shrink-0 ml-1">
-          <Check size={16} className="cursor-pointer text-green-600" onClick={save} />
-          <X size={16} className="cursor-pointer text-red-500" onClick={() => setEditing(false)} />
+          <Check
+            size={16}
+            className="cursor-pointer text-green-600"
+            onClick={save}
+          />
+          <X
+            size={16}
+            className="cursor-pointer text-red-500"
+            onClick={() => setEditing(false)}
+          />
         </div>
       </div>
     );
@@ -515,7 +565,7 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
   const [localSizes, setLocalSizes] = useState(
     Array.isArray(itemSize) && itemSize.length > 0
       ? itemSize
-      : [{ length: "", width: "", height: "" }]
+      : [{ length: "", width: "", height: "" }],
   );
 
   useEffect(() => {
@@ -523,7 +573,7 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
       setLocalSizes(
         Array.isArray(itemSize) && itemSize.length > 0
           ? itemSize
-          : [{ length: "", width: "", height: "" }]
+          : [{ length: "", width: "", height: "" }],
       );
     }
   }, [itemSize, editing]);
@@ -561,7 +611,12 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
       return;
     }
 
-    dispatch(updateProduct({ productId, field: "itemSize", value: cleanedSizes }, token))
+    dispatch(
+      updateProduct(
+        { productId, field: "itemSize", value: cleanedSizes },
+        token,
+      ),
+    )
       .unwrap()
       .then(() => toast.success("Item sizes updated"))
       .catch((err) => toast.error(err.message || "Update failed"));
@@ -573,7 +628,7 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
     setLocalSizes(
       Array.isArray(itemSize) && itemSize.length > 0
         ? itemSize
-        : [{ length: "", width: "", height: "" }]
+        : [{ length: "", width: "", height: "" }],
     );
     setEditing(false);
   };
@@ -641,7 +696,9 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
     <div className="flex flex-col gap-1">
       {localSizes.map((size, index) => (
         <div key={index} className="flex items-center justify-between group">
-          <span className="text-sm font-medium text-gray-700">{formatSize(size)}</span>
+          <span className="text-sm font-medium text-gray-700">
+            {formatSize(size)}
+          </span>
         </div>
       ))}
       <Pencil
@@ -663,7 +720,7 @@ const EditableImage = ({ productId, currentImage }) => {
     if (!file) return;
 
     // Basic Validation
-    if (!file.type.startsWith('image/')) {
+    if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file");
       return;
     }
@@ -674,12 +731,14 @@ const EditableImage = ({ productId, currentImage }) => {
 
       const imageUrl = await uploadImageToCloudinary(file);
 
-      await dispatch(updateProduct({
-        productId,
-        field: "imageURL",
-        value: imageUrl,
-        token
-      })).unwrap();
+      await dispatch(
+        updateProduct({
+          productId,
+          field: "imageURL",
+          value: imageUrl,
+          token,
+        }),
+      ).unwrap();
 
       toast.success("Image updated successfully", { id: loadingToast });
     } catch (err) {
@@ -702,7 +761,12 @@ const EditableImage = ({ productId, currentImage }) => {
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <label className="cursor-pointer bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-bold shadow-lg hover:bg-indigo-50 transition">
               {uploading ? "Processing..." : "Replace Image"}
-              <input type="file" className="hidden" onChange={handleFileChange} disabled={uploading} />
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+                disabled={uploading}
+              />
             </label>
           </div>
         </>
@@ -710,7 +774,12 @@ const EditableImage = ({ productId, currentImage }) => {
         <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-400 hover:text-indigo-500 transition">
           <PlusCircle className="w-10 h-10" />
           <span className="text-sm font-medium">Upload Product Image</span>
-          <input type="file" className="hidden" onChange={handleFileChange} disabled={uploading} />
+          <input
+            type="file"
+            className="hidden"
+            onChange={handleFileChange}
+            disabled={uploading}
+          />
         </label>
       )}
 
@@ -732,7 +801,6 @@ const ProductModal = ({ product, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 backdrop-blur-sm transition-opacity duration-300 ease-out">
       <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] transition-transform duration-300 ease-out">
-
         {/* HEADER */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-indigo-50/70 rounded-t-2xl">
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -750,10 +818,8 @@ const ProductModal = ({ product, onClose }) => {
         {/* BODY */}
         <div className="p-6 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
             {/* CATEGORY / FINISH (LEFT) + IMAGE (RIGHT) */}
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border rounded-xl bg-indigo-50/50">
-
               {/* LEFT COLUMN */}
               <div className="md:col-span-2 space-y-4">
                 <div className="p-3 bg-white border rounded-lg shadow-sm">
@@ -801,7 +867,7 @@ const ProductModal = ({ product, onClose }) => {
                       productId={product._id}
                     />
                   </div>
-                )
+                ),
               )}
             </div>
 
@@ -832,16 +898,16 @@ const ProductModal = ({ product, onClose }) => {
             {/* SIZE INFO */}
             <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 border-t pt-4">
               <div className="p-3 border rounded-lg bg-white shadow-sm">
-    <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
-      <Box className="w-3 h-3" />
-      Item Dimensions (Array)
-    </label>
-    {/* REPLACED WITH ARRAY COMPONENT */}
-    <EditableItemSizeArray 
-      productId={product._id} 
-      itemSize={product.itemSize} 
-    />
-  </div>
+                <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
+                  <Box className="w-3 h-3" />
+                  Item Dimensions (Array)
+                </label>
+                {/* REPLACED WITH ARRAY COMPONENT */}
+                <EditableItemSizeArray
+                  productId={product._id}
+                  itemSize={product.itemSize}
+                />
+              </div>
 
               <div className="p-3 border rounded-lg bg-white shadow-sm">
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
@@ -860,8 +926,8 @@ const ProductModal = ({ product, onClose }) => {
 
         {/* FOOTER */}
         <div className="px-6 py-3 border-t border-gray-100 text-right text-sm text-gray-500 bg-gray-50 rounded-b-2xl">
-          Click the <Pencil className="w-3 h-3 inline-block" /> icon to edit. Changes
-          save automatically on blur/enter.
+          Click the <Pencil className="w-3 h-3 inline-block" /> icon to edit.
+          Changes save automatically on blur/enter.
         </div>
       </div>
     </div>
@@ -883,51 +949,51 @@ const CreateProductModal = ({ onClose }) => {
 
   const initialCategory = categories.length > 0 ? categories[0]._id : "";
 
- // Update initial state
-const [formData, setFormData] = useState({
-  name: "",
-  itemNumber: "",
-  description: "",
-  category: initialCategory,
-  masterPack: "",
-  weight: "",
-  finish: "",
-  otherMaterial: [""],
-  price: "",
-  discountPercent: "",
-  itemSize: [{ length: "", width: "", height: "" }], // Array now
-  cartonSize: { length: "", width: "", height: "" },
-});
+  // Update initial state
+  const [formData, setFormData] = useState({
+    name: "",
+    itemNumber: "",
+    description: "",
+    category: initialCategory,
+    masterPack: "",
+    weight: "",
+    finish: "",
+    otherMaterial: [""],
+    price: "",
+    discountPercent: "",
+    itemSize: [{ length: "", width: "", height: "" }], // Array now
+    cartonSize: { length: "", width: "", height: "" },
+  });
 
-// Add handlers for array sizes
-const handleItemSizeChange = (index, field, value) => {
-  const updated = [...formData.itemSize];
-  updated[index] = { ...updated[index], [field]: value };
-  setFormData((prev) => ({ ...prev, itemSize: updated }));
-};
+  // Add handlers for array sizes
+  const handleItemSizeChange = (index, field, value) => {
+    const updated = [...formData.itemSize];
+    updated[index] = { ...updated[index], [field]: value };
+    setFormData((prev) => ({ ...prev, itemSize: updated }));
+  };
 
-const addItemSize = () => {
-  setFormData((prev) => ({
-    ...prev,
-    itemSize: [...prev.itemSize, { length: "", width: "", height: "" }],
-  }));
-};
+  const addItemSize = () => {
+    setFormData((prev) => ({
+      ...prev,
+      itemSize: [...prev.itemSize, { length: "", width: "", height: "" }],
+    }));
+  };
 
-const removeItemSize = (index) => {
-  if (formData.itemSize.length === 1) {
-    toast.error("At least one size is required");
-    return;
-  }
-  setFormData((prev) => ({
-    ...prev,
-    itemSize: prev.itemSize.filter((_, i) => i !== index),
-  }));
-};
+  const removeItemSize = (index) => {
+    if (formData.itemSize.length === 1) {
+      toast.error("At least one size is required");
+      return;
+    }
+    setFormData((prev) => ({
+      ...prev,
+      itemSize: prev.itemSize.filter((_, i) => i !== index),
+    }));
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (!file.type.startsWith('image/')) {
+      if (!file.type.startsWith("image/")) {
         toast.error("Please select an image file");
         return;
       }
@@ -949,26 +1015,26 @@ const removeItemSize = (index) => {
     }));
   };
 
- const handleMaterialChange = (index, value) => {
-  const updated = [...formData.otherMaterial];
-  updated[index] = value;
-  setFormData((prev) => ({ ...prev, otherMaterial: updated }));
-};
+  const handleMaterialChange = (index, value) => {
+    const updated = [...formData.otherMaterial];
+    updated[index] = value;
+    setFormData((prev) => ({ ...prev, otherMaterial: updated }));
+  };
 
-const addMaterialSlot = () => {
-  setFormData((prev) => ({
-    ...prev,
-    otherMaterial: [...prev.otherMaterial, ""],
-  }));
-};
+  const addMaterialSlot = () => {
+    setFormData((prev) => ({
+      ...prev,
+      otherMaterial: [...prev.otherMaterial, ""],
+    }));
+  };
 
-const removeMaterialSlot = (index) => {
-  const updated = formData.otherMaterial.filter((_, i) => i !== index);
-  setFormData((prev) => ({
-    ...prev,
-    otherMaterial: updated.length > 0 ? updated : [""],
-  }));
-};
+  const removeMaterialSlot = (index) => {
+    const updated = formData.otherMaterial.filter((_, i) => i !== index);
+    setFormData((prev) => ({
+      ...prev,
+      otherMaterial: updated.length > 0 ? updated : [""],
+    }));
+  };
 
   const calculateDiscountedPrice = () => {
     const price = Number(formData.price);
@@ -979,58 +1045,63 @@ const removeMaterialSlot = (index) => {
     return (price - (price * discount) / 100).toFixed(2);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!formData.name.trim() || !formData.category) {
-    toast.error("Product Name and Category are required.");
-    return;
-  }
-
-  try {
-    setIsCreating(true);
-    let imageUrl;
-    if (imageFile) {
-      const uploadToast = toast.loading("Uploading product image...");
-      imageUrl = await uploadImageToCloudinary(imageFile);
-      toast.success("Image uploaded!", { id: uploadToast });
+    if (!formData.name.trim() || !formData.category) {
+      toast.error("Product Name and Category are required.");
+      return;
     }
 
-    const productData = {
-      ...formData,
-      imageURL: imageUrl,
-      price: formData.price !== "" ? Number(formData.price) : undefined,
-      discountPercent: formData.discountPercent !== "" ? Number(formData.discountPercent) : undefined,
-      masterPack: formData.masterPack || undefined,
-      weight: formData.weight || undefined,
-      // Clean itemSize array - remove empty sizes
-      itemSize: formData.itemSize
-        .map((size) => ({
-          length: size.length?.trim() || "",
-          width: size.width?.trim() || "",
-          height: size.height?.trim() || "",
-        }))
-        .filter((size) => size.length || size.width || size.height),
-      cartonSize: Object.fromEntries(
-        Object.entries(formData.cartonSize).map(([key, val]) => [
-          key,
-          val !== "" ? Number(val) : undefined,
-        ])
-      ),
-    };
+    try {
+      setIsCreating(true);
+      let imageUrl;
+      if (imageFile) {
+        const uploadToast = toast.loading("Uploading product image...");
+        imageUrl = await uploadImageToCloudinary(imageFile);
+        toast.success("Image uploaded!", { id: uploadToast });
+      }
 
-    await dispatch(createProduct({ productData, token })).unwrap();
-    toast.success("Product created successfully!");
-    onClose();
-    dispatch(fetchProducts());
-  } catch (err) {
-    const message = typeof err === "string" ? err : err?.message || "Failed to create product.";
-    toast.error(message);
-  } finally {
-    setIsCreating(false);
-  }
-};
+      const productData = {
+        ...formData,
+        imageURL: imageUrl,
+        price: formData.price !== "" ? Number(formData.price) : undefined,
+        discountPercent:
+          formData.discountPercent !== ""
+            ? Number(formData.discountPercent)
+            : undefined,
+        masterPack: formData.masterPack || undefined,
+        weight: formData.weight || undefined,
+        // Clean itemSize array - remove empty sizes
+        itemSize: formData.itemSize
+          .map((size) => ({
+            length: size.length?.trim() || "",
+            width: size.width?.trim() || "",
+            height: size.height?.trim() || "",
+          }))
+          .filter((size) => size.length || size.width || size.height),
+        cartonSize: Object.fromEntries(
+          Object.entries(formData.cartonSize).map(([key, val]) => [
+            key,
+            val !== "" ? Number(val) : undefined,
+          ]),
+        ),
+      };
+
+      await dispatch(createProduct({ productData, token })).unwrap();
+      toast.success("Product created successfully!");
+      onClose();
+      dispatch(fetchProducts());
+    } catch (err) {
+      const message =
+        typeof err === "string"
+          ? err
+          : err?.message || "Failed to create product.";
+      toast.error(message);
+    } finally {
+      setIsCreating(false);
+    }
+  };
 
   const inputClasses =
     "border border-gray-300 px-3 py-2 rounded-lg w-full text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition";
@@ -1057,15 +1128,21 @@ const removeMaterialSlot = (index) => {
         {/* BODY (Form) */}
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-4 items-end">
-
             {/* Image Section - Unchanged as requested */}
             <div className="md:col-span-12 flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 hover:border-indigo-300 transition-colors">
               {imagePreview ? (
                 <div className="relative w-32 h-32 mb-2">
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-contain rounded-lg shadow-md" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-contain rounded-lg shadow-md"
+                  />
                   <button
                     type="button"
-                    onClick={() => { setImageFile(null); setImagePreview(null); }}
+                    onClick={() => {
+                      setImageFile(null);
+                      setImagePreview(null);
+                    }}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600"
                   >
                     <X size={14} />
@@ -1075,160 +1152,273 @@ const removeMaterialSlot = (index) => {
                 <label className="flex flex-col items-center gap-2 cursor-pointer text-gray-500 hover:text-indigo-600">
                   <PlusCircle className="w-10 h-10" />
                   <span className="text-sm font-medium">Add Product Image</span>
-                  <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={handleImageChange}
+                    accept="image/*"
+                  />
                 </label>
               )}
             </div>
 
             {/* ROW 1: Item Number#, Product Name, Category */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Item Number#</label>
-              <input name="itemNumber" type="text" value={formData.itemNumber} onChange={handleChange} className={inputClasses} placeholder="#" />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Item Number#
+              </label>
+              <input
+                name="itemNumber"
+                type="text"
+                value={formData.itemNumber}
+                onChange={handleChange}
+                className={inputClasses}
+                placeholder="#"
+              />
             </div>
             <div className="md:col-span-7">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Product Name <span className="text-red-500">*</span></label>
-              <input id="name" name="name" type="text" value={formData.name} onChange={handleChange} required className={inputClasses} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Product Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className={inputClasses}
+              />
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Category <span className="text-red-500">*</span></label>
-              <select id="category" name="category" value={formData.category} onChange={handleChange} required className={inputClasses}>
-                {categories.map((cat) => <option key={cat._id} value={cat._id}>{cat.name}</option>)}
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Category <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className={inputClasses}
+              >
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             {/* ROW 2: Item Dimensions (Array) + Finish */}
-<div className="md:col-span-5">
-  <label className="block text-sm font-semibold text-gray-700 mb-1">
-    Item Dimensions (L×W×H)
-  </label>
-  <div className="space-y-2">
-    {formData.itemSize.map((size, index) => (
-      <div key={index} className="flex gap-1 items-center">
-        {["length", "width", "height"].map((key) => (
-          <input
-            key={key}
-            name={key}
-            type="number"
-            placeholder={key[0].toUpperCase()}
-            value={size[key]}
-            onChange={(e) => handleItemSizeChange(index, key, e.target.value)}
-            className={sizeInputClasses}
-          />
-        ))}
-        {formData.itemSize.length > 1 && (
-          <X
-            size={16}
-            className="cursor-pointer text-red-500 hover:text-red-700 shrink-0"
-            onClick={() => removeItemSize(index)}
-          />
-        )}
-      </div>
-    ))}
-    <button
-      type="button"
-      onClick={addItemSize}
-      className="flex items-center gap-1 text-green-600 hover:text-green-700 text-xs font-medium"
-    >
-      <PlusCircle size={14} />
-      <span>Add Size</span>
-    </button>
-  </div>
-</div>
+            <div className="md:col-span-5">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Item Dimensions (L×W×H)
+              </label>
+              <div className="space-y-2">
+                {formData.itemSize.map((size, index) => (
+                  <div key={index} className="flex gap-1 items-center">
+                    {["length", "width", "height"].map((key) => (
+                      <input
+                        key={key}
+                        name={key}
+                        type="number"
+                        placeholder={key[0].toUpperCase()}
+                        value={size[key]}
+                        onChange={(e) =>
+                          handleItemSizeChange(index, key, e.target.value)
+                        }
+                        className={sizeInputClasses}
+                      />
+                    ))}
+                    {formData.itemSize.length > 1 && (
+                      <X
+                        size={16}
+                        className="cursor-pointer text-red-500 hover:text-red-700 shrink-0"
+                        onClick={() => removeItemSize(index)}
+                      />
+                    )}
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addItemSize}
+                  className="flex items-center gap-1 text-green-600 hover:text-green-700 text-xs font-medium"
+                >
+                  <PlusCircle size={14} />
+                  <span>Add Size</span>
+                </button>
+              </div>
+            </div>
 
-<div className="md:col-span-7">
-  <label className="block text-sm font-semibold text-gray-700 mb-1">Finish</label>
-  <input
-    name="finish"
-    type="text"
-    placeholder="Finish type"
-    value={formData.finish}
-    onChange={handleChange}
-    className={inputClasses}
-  />
-</div>
-
+            <div className="md:col-span-7">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Finish
+              </label>
+              <input
+                name="finish"
+                type="text"
+                placeholder="Finish type"
+                value={formData.finish}
+                onChange={handleChange}
+                className={inputClasses}
+              />
+            </div>
 
             {/* ROW 3: Weight, Price, Discount, Discounted Price */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Weight</label>
-              <input name="weight" type="text" value={formData.weight} onChange={handleChange} className={inputClasses} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Weight
+              </label>
+              <input
+                name="weight"
+                type="text"
+                value={formData.weight}
+                onChange={handleChange}
+                className={inputClasses}
+              />
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Price</label>
-              <input name="price" type="number" value={formData.price} onChange={handleChange} className={inputClasses} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Price
+              </label>
+              <input
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+                className={inputClasses}
+              />
             </div>
             <div className="md:col-span-3">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Discount</label>
-              <input name="discount" type="number" value={formData.discount} onChange={handleChange} className={inputClasses} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Discount
+              </label>
+              <input
+                name="discount"
+                type="number"
+                value={formData.discount}
+                onChange={handleChange}
+                className={inputClasses}
+              />
             </div>
             <div className="md:col-span-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Discounted Price</label>
-              <input name="discountedPrice" type="number" value={calculateDiscountedPrice()} readOnly className={`${inputClasses} bg-gray-50 font-bold text-indigo-700`} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Discounted Price
+              </label>
+              <input
+                name="discountedPrice"
+                type="number"
+                value={calculateDiscountedPrice()}
+                readOnly
+                className={`${inputClasses} bg-gray-50 font-bold text-indigo-700`}
+              />
             </div>
 
             {/* ROW 4: Other Materials (Full Width) */}
             {/* ROW 4: Other Materials */}
-{/* ROW 4: Other Materials */}
-<div className="md:col-span-12">
-  <label className="block text-sm font-semibold text-gray-700 mb-1">Other Materials</label>
-  <div className="space-y-2">
-    {formData.otherMaterial.map((material, index) => (
-      <div key={index} className="flex gap-2 items-center">
-        <input
-          type="text"
-          value={material}
-          onChange={(e) => handleMaterialChange(index, e.target.value)}
-          placeholder={index === 0 ? "Enter first material (e.g. Iron)" : "Enter additional material"}
-          className={inputClasses}
-        />
-        {index === 0 ? (
-          <button
-            type="button"
-            onClick={addMaterialSlot}
-            className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm"
-            title="Add another material"
-          >
-            <PlusCircle size={20} />
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => removeMaterialSlot(index)}
-            className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
-          >
-            <X size={20} />
-          </button>
-        )}
-      </div>
-    ))}
-  </div>
-</div>
+            {/* ROW 4: Other Materials */}
+            <div className="md:col-span-12">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Other Materials
+              </label>
+              <div className="space-y-2">
+                {formData.otherMaterial.map((material, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={material}
+                      onChange={(e) =>
+                        handleMaterialChange(index, e.target.value)
+                      }
+                      placeholder={
+                        index === 0
+                          ? "Enter first material (e.g. Iron)"
+                          : "Enter additional material"
+                      }
+                      className={inputClasses}
+                    />
+                    {index === 0 ? (
+                      <button
+                        type="button"
+                        onClick={addMaterialSlot}
+                        className="p-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm"
+                        title="Add another material"
+                      >
+                        <PlusCircle size={20} />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => removeMaterialSlot(index)}
+                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
+                      >
+                        <X size={20} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
             {/* ROW 5: Description (Full Width) */}
             <div className="md:col-span-12">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
-              <textarea id="description" name="description" value={formData.description} onChange={handleChange} className={`${inputClasses} min-h-20`} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                className={`${inputClasses} min-h-20`}
+              />
             </div>
 
             {/* ROW 6: Master Pack & Carton Size (Aligned Heights) */}
             <div className="md:col-span-3">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Master Pack</label>
-              <input name="masterPack" type="text" value={formData.masterPack} onChange={handleChange} className={inputClasses} />
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Master Pack
+              </label>
+              <input
+                name="masterPack"
+                type="text"
+                value={formData.masterPack}
+                onChange={handleChange}
+                className={inputClasses}
+              />
             </div>
             <div className="md:col-span-9">
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Carton Size (L×W×H)</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Carton Size (L×W×H)
+              </label>
               <div className="flex gap-2">
                 {["length", "width", "height"].map((key) => (
-                  <input key={key} name={key} type="number" placeholder={key[0].toUpperCase()} value={formData.cartonSize[key]} onChange={(e) => handleSizeChange(e, "cartonSize")} className={sizeInputClasses} />
+                  <input
+                    key={key}
+                    name={key}
+                    type="number"
+                    placeholder={key[0].toUpperCase()}
+                    value={formData.cartonSize[key]}
+                    onChange={(e) => handleSizeChange(e, "cartonSize")}
+                    className={sizeInputClasses}
+                  />
                 ))}
               </div>
             </div>
-
           </div>
 
           {/* FOOTER */}
           <div className="pt-6 border-t mt-6 flex justify-end">
-            <button type="submit" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg active:scale-95 transition-all" disabled={isCreating}>
-              {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <PlusCircle className="w-5 h-5" />}
+            <button
+              type="submit"
+              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg active:scale-95 transition-all"
+              disabled={isCreating}
+            >
+              {isCreating ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <PlusCircle className="w-5 h-5" />
+              )}
               {isCreating ? "Saving..." : "Create Product Template"}
             </button>
           </div>
@@ -1241,14 +1431,23 @@ const removeMaterialSlot = (index) => {
 /* ----------------------------------
 MAIN PRODUCTS TABLE (NO SKU)
 ----------------------------------- */
-const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, setCurrentPage }) => {
+const ProductsTable = ({
+  products,
+  onEdit,
+  onDelete,
+  sortOrder,
+  setSortOrder,
+  setCurrentPage,
+}) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full divide-y divide-gray-400">
           <thead className="bg-linear-to-r from-indigo-50 to-purple-50">
             <tr>
-              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Img</th>
+              <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Img
+              </th>
               <th className="px-2 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
                 <div className="flex items-center gap-1">
                   Item #
@@ -1270,29 +1469,59 @@ const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, se
                   </div>
                 </div>
               </th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Product</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Category</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Item Size (L×W×H)</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Finish</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Wt</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Price</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis%</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Dis. Price</th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Product
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Category
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">
+                Item Size (L×W×H)
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Finish
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Wt
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Price
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Dis%
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Dis. Price
+              </th>
 
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                Oth. Material
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">
+                M.Pack
+              </th>
+              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">
+                Ctn Size
+              </th>
 
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">Oth. Material</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase">M.Pack</th>
-              <th className="px-1 py-3 text-left text-[12px] font-bold text-gray-700 uppercase leading-tight">Ctn Size</th>
-
-              <th className="px-1 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">Actions</th>
+              <th className="px-1 py-3 text-center text-[12px] font-bold text-gray-700 uppercase">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-400 bg-white">
             {products.map((product) => (
-              <tr key={product._id} className="hover:bg-gray-50 transition-colors duration-150">
+              <tr
+                key={product._id}
+                className="hover:bg-gray-50 transition-colors duration-150"
+              >
                 <td className="px-1 py-2 whitespace-nowrap">
                   {product.imageURL ? (
-                    <img src={product.imageURL} alt={product.name} className="w-12 h-12 object-contain rounded shadow-sm" />
+                    <img
+                      src={product.imageURL}
+                      alt={product.name}
+                      className="w-12 h-12 object-contain rounded shadow-sm"
+                    />
                   ) : (
                     <div className="w-12 h-12 bg-gray-50 flex items-center justify-center rounded border border-gray-100">
                       <Package className="w-5 h-5 text-gray-300" />
@@ -1305,11 +1534,11 @@ const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, se
                   </span>
                 </td>
                 <td className="px-1 py-2">
-                  <div className="flex flex-col min-w-[140px]">
-                    <div className="text-sm font-bold text-gray-900 truncate max-w-[230px]">
+                  <div className="flex flex-col min-w-35">
+                    <div className="text-sm font-bold text-gray-900 truncate max-w-57.5">
                       {product.name}
                     </div>
-                    <div className="text-[11px] text-gray-400 truncate max-w-[140px]">
+                    <div className="text-[11px] text-gray-400 truncate max-w-35">
                       {product.description || "No description"}
                     </div>
                   </div>
@@ -1323,21 +1552,22 @@ const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, se
                   {formatSize(product.itemSize)}
                 </td> */}
                 <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600">
-  <div className="flex flex-col gap-0.5">
-    {Array.isArray(product.itemSize) && product.itemSize.length > 0 ? (
-      product.itemSize.map((size, idx) => (
-        <span key={idx} className="text-sm">
-          {formatSize(size)}
-        </span>
-      ))
-    ) : (
-      <span>—</span>
-    )}
-  </div>
-</td>
+                  <div className="flex flex-col gap-0.5">
+                    {Array.isArray(product.itemSize) &&
+                    product.itemSize.length > 0 ? (
+                      product.itemSize.map((size, idx) => (
+                        <span key={idx} className="text-sm">
+                          {formatSize(size)}
+                        </span>
+                      ))
+                    ) : (
+                      <span>—</span>
+                    )}
+                  </div>
+                </td>
                 <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600">
                   <span
-                    className="block max-w-[150px] truncate"
+                    className="block max-w-37.5 truncate"
                     title={product.finish}
                   >
                     {product.finish || "—"}
@@ -1350,30 +1580,33 @@ const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, se
                   {formatCurrency(product.price)}
                 </td>
                 <td className="px-1 py-2 whitespace-nowrap text-sm font-bold text-red-600 text-center">
-                  {product.discountPercent ? `${product.discountPercent}%` : "—"}
+                  {product.discountPercent
+                    ? `${product.discountPercent}%`
+                    : "—"}
                 </td>
                 <td className="px-1 py-2 whitespace-nowrap text-sm font-bold text-red-700">
                   {product.discountPercent
-                    ? formatCurrency(product.price * (1 - product.discountPercent / 100))
+                    ? formatCurrency(
+                        product.price * (1 - product.discountPercent / 100),
+                      )
                     : "—"}
                 </td>
 
-
-                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600 max-w-[80px]">
+                <td className="px-1 py-2 whitespace-nowrap text-sm text-gray-600 max-w-20">
                   <div className="flex flex-wrap gap-1">
-                    {product.otherMaterial && Array.isArray(product.otherMaterial) && product.otherMaterial.length > 0 ? (
-                      product.otherMaterial.map((material, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-[10px] truncate max-w-[70px]"
-                          title={material}
-                        >
-                          {material}
-                        </span>
-                      ))
-                    ) : (
-                      "—"
-                    )}
+                    {product.otherMaterial &&
+                    Array.isArray(product.otherMaterial) &&
+                    product.otherMaterial.length > 0
+                      ? product.otherMaterial.map((material, idx) => (
+                          <span
+                            key={idx}
+                            className="inline-block px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded text-[10px] truncate max-w-17.5"
+                            title={material}
+                          >
+                            {material}
+                          </span>
+                        ))
+                      : "—"}
                   </div>
                 </td>
                 <td className="px-1 py-2 whitespace-nowrap text-sm text-center text-gray-600">
@@ -1386,7 +1619,10 @@ const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, se
                 <td className="px-1 py-2 whitespace-nowrap text-center">
                   <div className="flex items-center justify-center gap-1">
                     <button
-                      onClick={(e) => { e.stopPropagation(); downloadQR(product); }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        downloadQR(product);
+                      }}
                       className="p-1 text-green-600 hover:bg-green-50 rounded"
                     >
                       <Download className="w-4 h-4" />
@@ -1398,12 +1634,12 @@ const ProductsTable = ({ products, onEdit, onDelete, sortOrder, setSortOrder, se
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button
-      onClick={() => onDelete(product._id)}
-      className="p-1 text-red-600 hover:bg-red-50 rounded transition"
-      title="Delete Product"
-    >
-      <Trash2 className="w-4 h-4" />
-    </button>
+                      onClick={() => onDelete(product._id)}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded transition"
+                      title="Delete Product"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -1433,13 +1669,15 @@ MAIN PAGE (Updated Search: no SKU)
 const ProductsPage = () => {
   const dispatch = useDispatch();
   const { products, categories, pagination, loading } = useSelector(
-    (state) => state.admin
+    (state) => state.admin,
   );
 
   const { stats } = useSelector((state) => state.admin);
   const [currentPage, setCurrentPage] = useState(1);
 
-  console.log(products);
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null;
 
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -1463,9 +1701,9 @@ const ProductsPage = () => {
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-    useEffect(() => {
-        dispatch(fetchDashboardStats(localStorage.getItem("token")));
-      }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchDashboardStats(localStorage.getItem("token")));
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(
@@ -1475,37 +1713,33 @@ const ProductsPage = () => {
         page: currentPage,
         limit: 100,
         categoryId: selectedCategory,
-      })
+      }),
     );
   }, [dispatch, debouncedSearchTerm, sortOrder, currentPage, selectedCategory]);
-
 
   useEffect(() => {
     dispatch(fetchCategories());
     // dispatch(fetchFinishes());
   }, [dispatch]);
 
-
-
   const handleDeleteProduct = (productId) => {
-  setDeleteConfirm(productId);
-};
+    setDeleteConfirm(productId);
+  };
 
-const confirmDelete = () => {
-  if (deleteConfirm) {
-    dispatch(deleteProduct({ productId: deleteConfirm, }))
-      .unwrap()
-      .then(() => {
-        toast.success("Product deleted successfully");
-        setDeleteConfirm(null);
-       
-      })
-      .catch((err) => {
-        toast.error(err.message || "Failed to delete product");
-        setDeleteConfirm(null);
-      });
-  }
-};
+  const confirmDelete = () => {
+    if (deleteConfirm) {
+      dispatch(deleteProduct({ productId: deleteConfirm }))
+        .unwrap()
+        .then(() => {
+          toast.success("Product deleted successfully");
+          setDeleteConfirm(null);
+        })
+        .catch((err) => {
+          toast.error(err.message || "Failed to delete product");
+          setDeleteConfirm(null);
+        });
+    }
+  };
 
 
 // const handleDownloadAllQRZips = async () => {
@@ -1618,7 +1852,7 @@ const handleExportExcel = async () => {
 
   const selectedProduct = useMemo(
     () => products.find((p) => p._id === selectedProductId),
-    [products, selectedProductId]
+    [products, selectedProductId],
   );
 
   if (loading && products.length === 0) {
@@ -1646,27 +1880,35 @@ const handleExportExcel = async () => {
             </p>
           </div>
 
+    
           <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full lg:w-auto">
-            <button
-              onClick={handleExportExcel}
-              className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
-            >
-              <Download className="w-4 h-4 shrink-0" />
-              <span className="truncate">Excel</span>
-            </button>
+            {user?.role === "admin" && (
+  <>
+    <button
+      onClick={handleExportExcel}
+      className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-emerald-700 transition shadow"
+    >
+      <Download className="w-4 h-4 shrink-0" />
+      <span className="truncate">Excel</span>
+    </button>
 
-            <button
-              onClick={handleDownloadAllQRZips}
-              disabled={isDownloadingAll}
-              className="flex items-center justify-center gap-2 bg-green-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition shadow disabled:opacity-50"
-            >
-              {isDownloadingAll ? (
-                <Loader2 className="w-4 h-4 animate-spin shrink-0" />
-              ) : (
-                <Download className="w-4 h-4 shrink-0" />
-              )}
-              <span className="truncate">{isDownloadingAll ? "..." : "All QRs"}</span>
-            </button>
+    <button
+      onClick={handleDownloadAllQRZips}
+      disabled={isDownloadingAll}
+      className="flex items-center justify-center gap-2 bg-green-600 text-white px-3 py-2.5 rounded-xl text-sm font-semibold hover:bg-green-700 transition shadow disabled:opacity-50"
+    >
+      {isDownloadingAll ? (
+        <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+      ) : (
+        <Download className="w-4 h-4 shrink-0" />
+      )}
+      <span className="truncate">
+        {isDownloadingAll ? "..." : "All QRs"}
+      </span>
+    </button>
+  </>
+)}
+
 
             <button
               onClick={() => setIsCreateModalOpen(true)}
@@ -1708,10 +1950,9 @@ const handleExportExcel = async () => {
           </div>
 
           <div className="text-sm text-gray-600 font-medium flex items-center gap-1 lg:ml-auto">
-            <span className="font-bold text-indigo-600">
-              {products.length}
-            </span>{" "}
-            of <span className="font-bold">{stats?.totalProducts}</span> products  
+            <span className="font-bold text-indigo-600">{products.length}</span>{" "}
+            of <span className="font-bold">{stats?.totalProducts}</span>{" "}
+            products
           </div>
         </div>
 
@@ -1728,8 +1969,14 @@ const handleExportExcel = async () => {
         {/* PAGINATION CONTROLS */}
         <div className="mt-6 flex items-center justify-between bg-white px-6 py-4 rounded-2xl shadow-sm border border-gray-100">
           <div className="text-sm text-gray-500">
-            Showing page <span className="font-bold text-gray-900">{pagination?.currentPage}</span> of{" "}
-            <span className="font-bold text-gray-900">{pagination?.totalPages}</span>
+            Showing page{" "}
+            <span className="font-bold text-gray-900">
+              {pagination?.currentPage}
+            </span>{" "}
+            of{" "}
+            <span className="font-bold text-gray-900">
+              {pagination?.totalPages}
+            </span>
           </div>
 
           <div className="flex gap-2">
@@ -1763,41 +2010,36 @@ const handleExportExcel = async () => {
           <CreateProductModal onClose={() => setIsCreateModalOpen(false)} />
         )}
 
-
         {deleteConfirm && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-    <div className="bg-white rounded-2xl p-6 max-w-md shadow-2xl">
-      <h3 className="text-xl font-bold text-gray-900 mb-3">Delete Product</h3>
-      <p className="text-gray-600 mb-6">
-        Are you sure you want to delete this product? This action cannot be undone.
-      </p>
-      <div className="flex gap-3 justify-end">
-        <button
-          onClick={() => setDeleteConfirm(null)}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={confirmDelete}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          Delete
-        </button>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl p-6 max-w-md shadow-2xl">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Delete Product
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Are you sure you want to delete this product? This action cannot
+                be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setDeleteConfirm(null)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-  </div>
-)}
-
-        
-      </div>
-
-
-      
-    </div>
-    
-    
   );
 };
 
