@@ -225,6 +225,30 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+
+// Add this near your other thunks
+export const fetchAllProductsForExport = createAsyncThunk(
+  "admin/fetchAllProductsForExport",
+  async ({ categoryId, search }, { rejectWithValue }) => {
+    try {
+      const params = new URLSearchParams({
+        page: 1,
+        limit: 5000, // Large enough to cover all products
+        search: search || "",
+      });
+
+      if (categoryId && categoryId !== "all") {
+        params.append("category", categoryId);
+      }
+
+      const res = await axiosInstance.get(`/products?${params.toString()}`);
+      return res.data.products; // Just return the array of products
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Export fetch failed");
+    }
+  }
+);
+
 const adminSlice = createSlice({
   name: "admin",
   initialState: {
