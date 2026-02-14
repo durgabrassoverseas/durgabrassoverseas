@@ -900,7 +900,7 @@ const ProductModal = ({ product, onClose }) => {
               <div className="p-3 border rounded-lg bg-white shadow-sm">
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
                   <Box className="w-3 h-3" />
-                  Item Dimensions (Array)
+                  Item Dimensions (")
                 </label>
                 {/* REPLACED WITH ARRAY COMPONENT */}
                 <EditableItemSizeArray
@@ -1210,7 +1210,7 @@ const CreateProductModal = ({ onClose }) => {
               </select>
             </div>
 
-            {/* ROW 2: Item Dimensions (Array) + Finish */}
+            {/* ROW 2: Item Dimensions (") + Finish */}
             <div className="md:col-span-5">
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Item Dimensions (L×W×H)
