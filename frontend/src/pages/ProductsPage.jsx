@@ -29,7 +29,7 @@ import {
 import { downloadQR, downloadAllQRsZip } from "../utils/qrDownloaders.js";
 import { exportProductsToExcel } from "../utils/excelExporter.js";
 import { uploadImageToCloudinary } from "../utils/cloudinaryUploader.js";
-import { fetchDashboardStats } from "../redux/slices/adminSlice";
+import { fetchDashboardStats, fetchAllProductsForExport } from "../redux/slices/adminSlice";
 
 /* ----------------------------------
 PRODUCT FIELDS (Metadata for Modals)
@@ -1741,6 +1741,43 @@ const ProductsPage = () => {
     }
   };
 
+
+// const handleDownloadAllQRZips = async () => {
+//   try {
+//     setIsDownloadingAll(true);
+//     // Use a unique ID for the toast so we can update it
+//     const toastId = "qr-zip-all";
+//     toast.loading("Fetching data for 2500+ products...", { id: toastId });
+
+//     // 1. Fetch the FULL list of products from the server
+//     const allProducts = await dispatch(
+//       fetchAllProductsForExport({
+//         categoryId: selectedCategory,
+//         search: debouncedSearchTerm,
+//       })
+//     ).unwrap();
+
+//     if (!allProducts || allProducts.length === 0) {
+//       toast.error("No products found to generate QR codes.", { id: toastId });
+//       setIsDownloadingAll(false);
+//       return;
+//     }
+
+//     // 2. Update toast to show progress of ZIP generation
+//     toast.loading(`Generating ${allProducts.length} QR codes... this may take a moment.`, { id: toastId });
+
+//     // 3. Pass the full array to your utility
+//     await downloadAllQRsZip(allProducts);
+
+//     toast.success(`ZIP downloaded with ${allProducts.length} QR codes!`, { id: toastId });
+//   } catch (error) {
+//     console.error("QR ZIP generation failed:", error);
+//     toast.error("Failed to generate ZIP file: " + (error.message || "Unknown error"), { id: "qr-zip-all" });
+//   } finally {
+//     setIsDownloadingAll(false);
+//   }
+// };
+
   const handleDownloadAllQRZips = async () => {
     if (products.length === 0) {
       toast.error("No products available to download.");
@@ -1761,20 +1798,51 @@ const ProductsPage = () => {
     }
   };
 
-  const handleExportExcel = () => {
-    if (products.length === 0) {
-      toast.error("No data to export");
+  // const handleExportExcel = () => {
+  //   if (products.length === 0) {
+  //     toast.error("No data to export");
+  //     return;
+  //   }
+
+  //   try {
+  //     exportProductsToExcel(products);
+  //     toast.success("Excel file generated!");
+  //   } catch (error) {
+  //     console.error("Excel export failed:", error);
+  //     toast.error("Failed to export Excel file");
+  //   }
+  // };
+
+
+  // 1. Make sure to import the new thunk at the top
+
+const handleExportExcel = async () => {
+  try {
+    // Start a loading toast so the user knows it's processing 2500+ items
+    const loadingToast = toast.loading("Preparing all products for export...");
+
+    // Fetch the data directly from the thunk
+    const allProducts = await dispatch(
+      fetchAllProductsForExport({
+        categoryId: selectedCategory,
+        search: debouncedSearchTerm,
+      })
+    ).unwrap();
+
+    if (!allProducts || allProducts.length === 0) {
+      toast.error("No data found to export", { id: loadingToast });
       return;
     }
 
-    try {
-      exportProductsToExcel(products);
-      toast.success("Excel file generated!");
-    } catch (error) {
-      console.error("Excel export failed:", error);
-      toast.error("Failed to export Excel file");
-    }
-  };
+    // Trigger the Excel export with the FULL list
+    exportProductsToExcel(allProducts);
+    
+    toast.success(`Exported ${allProducts.length} products successfully!`, { id: loadingToast });
+  } catch (error) {
+    console.error("Excel export failed:", error);
+    toast.error("Failed to export Excel file");
+  }
+};
 
   const handleCategoryChange = (e) => {
     console.log(e.target.value);
