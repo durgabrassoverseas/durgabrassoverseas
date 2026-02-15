@@ -1212,7 +1212,7 @@ const CreateProductModal = ({ onClose }) => {
               </select>
             </div>
 
-            {/* ROW 2: Item Dimensions (Array) + Finish */}
+            {/* ROW 2: Item Dimensions (") + Finish */}
             <div className="md:col-span-5">
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Item Dimensions (L×W×H)
