@@ -265,13 +265,15 @@ const EditableOtherMaterials = ({ productId, materials = [] }) => {
               onClick={save}
               className="px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition"
             >
-              Save
+              <Check size={14} />
+              {/* Save */}
             </button>
             <button
               onClick={() => setEditing(false)}
               className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition"
             >
-              Cancel
+              <X size={14} />
+              {/* Cancel */}
             </button>
           </div>
         </div>
@@ -676,7 +678,7 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
             className="flex items-center gap-1 px-3 py-1 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition"
           >
             <Check size={14} />
-            Save
+            {/* Save */}
           </button>
           <button
             type="button"
@@ -684,7 +686,7 @@ const EditableItemSizeArray = ({ productId, itemSize = [] }) => {
             className="flex items-center gap-1 px-3 py-1 bg-gray-200 text-gray-700 rounded-lg text-sm hover:bg-gray-300 transition"
           >
             <X size={14} />
-            Cancel
+            {/* Cancel */}
           </button>
         </div>
       </div>
@@ -900,7 +902,7 @@ const ProductModal = ({ product, onClose }) => {
               <div className="p-3 border rounded-lg bg-white shadow-sm">
                 <label className="text-xs font-semibold uppercase tracking-wider text-gray-500 flex items-center gap-1 mb-1">
                   <Box className="w-3 h-3" />
-                  Item Dimensions (Array)
+                  Item Dimensions (")
                 </label>
                 {/* REPLACED WITH ARRAY COMPONENT */}
                 <EditableItemSizeArray

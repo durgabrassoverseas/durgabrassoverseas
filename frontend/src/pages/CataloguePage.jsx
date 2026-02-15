@@ -64,6 +64,13 @@ const CataloguePage = () => {
     dispatch(fetchProducts({ search: debouncedSearchTerm, page: 1, limit: 100, categoryId }));
   };
 
+  const formatItemSizes = (sizes) => {
+  if (!sizes || !sizes.length) return null;
+
+  return sizes
+    .map(s => `${s.length}"L x ${s.width}"W x ${s.height}"H`)
+    .join(", ");
+};
 
   /* ---------------- NAVIGATION ---------------- */
   const nextProduct = useCallback(() => {
@@ -99,6 +106,8 @@ const CataloguePage = () => {
 
   const currentProduct = products[currentIndex];
   const progress = products.length > 0 ? ((currentIndex + 1) / products.length) * 100 : 0;
+
+  console.log(currentProduct);
 
 
   if (loading && !products.length) {
@@ -171,7 +180,7 @@ const CataloguePage = () => {
 
 
         {currentProduct ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-16 gap-2 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-10 gap-2 items-start">
             <div className="lg:col-span-8 sticky top-10">
               <div className="aspect-[16/9] rounded-[2.5rem] overflow-hidden bg-slate-200 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] group relative">
                 <img
@@ -210,10 +219,10 @@ const CataloguePage = () => {
               </p>
 
 
-              <div className="bg-white rounded-[2.5rem] p-8 grid grid-cols-2 gap-y-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.04)] border border-slate-50">
+              <div className="bg-white rounded-[2.5rem] p-4 grid grid-cols-2 gap-y-4 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.04)] border border-slate-50">
                 <DetailItem icon={<Ruler size={18} />} label="Item Size" 
-                  value={currentProduct.itemSize ? `${currentProduct.itemSize.length}"L x ${currentProduct.itemSize.width}"W x ${currentProduct.itemSize.height}"H` : null} />
-                <DetailItem icon={<Box size={18} />} label="Finish" value={currentProduct.finish?.name} />
+                  value={formatItemSizes(currentProduct.itemSize)} />
+                <DetailItem icon={<Box size={18} />} label="Finish" value={currentProduct.finish} />
                 <DetailItem icon={<Weight size={18} />} label="Weight" value={currentProduct.weight} />
                 <DetailItem icon={<Package size={18} />} label="Master Pack" value={currentProduct.masterPack} />
                 <DetailItem icon={<Box size={18} />} label="Other Material" value={currentProduct.otherMaterial} />

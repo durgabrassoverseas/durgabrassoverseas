@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCategories, createCategory } from "../redux/slices/adminSlice";
+import { fetchCategories, createCategory, deleteCategory } from "../redux/slices/adminSlice";
 import { toast } from "react-hot-toast";
 // Import icons for a modern look
-import { Plus, List, Loader2, Package, Tag } from 'lucide-react';
+import { Plus, List, Loader2, Package, Tag, Trash2 } from 'lucide-react';
 
 /**
  * Modern Category Tile Component
  */
-const CategoryTile = ({ category }) => {
+const CategoryTile = ({ category, onDelete }) => {
     // Note: Assuming category might have a count field (e.g., productCount)
     const productCount = category.productCount || Math.floor(Math.random() * 50); // Using random for demo
 
@@ -32,6 +32,15 @@ const CategoryTile = ({ category }) => {
             {/* <button className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition">
                 View
             </button> */}
+
+            {/* DELETE BUTTON */}
+            <button
+                onClick={() => onDelete(category)}
+                className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
+                title="Delete category"
+            >
+                <Trash2 className="w-5 h-5" />
+            </button>
         </div>
     );
 };
@@ -45,6 +54,7 @@ const CategoryPage = () => {
 
     const [categoryName, setCategoryName] = useState("");
     const [creating, setCreating] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
 
     // Effect for error notification
     useEffect(() => {
@@ -74,12 +84,30 @@ const CategoryPage = () => {
             setCategoryName("");
             toast.success(`Category "${trimmedName}" created successfully!`);
             // Refetch to ensure the list is current (good practice after mutation)
-            dispatch(fetchCategories()); 
+            dispatch(fetchCategories());
         } catch (err) {
             toast.error(err.message || "Failed to create category. Maybe it already exists?");
             console.error("Creation Error:", err);
         } finally {
             setCreating(false);
+        }
+    };
+
+    const handleDeleteCategory = (category) => {
+        setDeleteConfirm(category); // open modal
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteConfirm) return;
+
+        try {
+            await dispatch(deleteCategory({ id: deleteConfirm._id })).unwrap();
+            toast.success("Category deleted successfully");
+            dispatch(fetchCategories());
+        } catch (err) {
+            toast.error(err.message || "Failed to delete category");
+        } finally {
+            setDeleteConfirm(null); // close modal
         }
     };
 
@@ -168,9 +196,9 @@ const CategoryPage = () => {
                     {/* Right: Category List */}
                     <div className="lg:col-span-2 space-y-6">
                         <h2 className="text-2xl font-bold text-gray-800 flex items-center space-x-2">
-                             All Categories
+                            All Categories
                         </h2>
-                        
+
                         {categories.length === 0 && !loading ? (
                             <div className="text-center p-16 bg-white rounded-2xl shadow-xl border border-gray-200">
                                 <Package className="w-12 h-12 mx-auto text-gray-300" />
@@ -183,6 +211,7 @@ const CategoryPage = () => {
                                     <CategoryTile
                                         key={category._id}
                                         category={category}
+                                        onDelete={handleDeleteCategory}
                                     />
                                 ))}
                             </div>
@@ -190,6 +219,38 @@ const CategoryPage = () => {
                     </div>
                 </div>
             </div>
+            {deleteConfirm && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl p-6 max-w-md shadow-2xl w-full mx-4">
+                        <h3 className="text-xl font-bold text-gray-900 mb-3">
+                            Delete Category
+                        </h3>
+
+                        <p className="text-gray-600 mb-6">
+                            Are you sure you want to delete
+                            <span className="font-semibold"> "{deleteConfirm.name}" </span>?
+                            This action cannot be undone.
+                        </p>
+
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={() => setDeleteConfirm(null)}
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

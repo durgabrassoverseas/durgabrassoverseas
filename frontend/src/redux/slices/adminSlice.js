@@ -33,6 +33,21 @@ export const fetchCategories = createAsyncThunk(
   }
 );
 
+export const deleteCategory = createAsyncThunk(
+  "admin/deleteCategory",
+  async ({ id }, thunkAPI) => {
+    try {      const res = await axiosInstance.delete(`/categories/${id}`);
+      console.log("Delete category response data:", res.data); // Debugging line
+      return id; // return deleted category id
+    } catch (error) {
+      console.error("Delete category error:", error);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Delete category failed"
+      );
+    }
+  }
+);
+
 export const createProduct = createAsyncThunk(
   "admin/createProduct",
   async ({ productData }, thunkAPI) => {
@@ -284,6 +299,20 @@ const adminSlice = createSlice({
         state.categories = action.payload;
       })
       .addCase(fetchCategories.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.categories = state.categories.filter(
+          (cat) => cat._id !== action.payload
+        );
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
